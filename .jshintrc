@@ -1,0 +1,12 @@
+{
+  "browser": true,
+  "camelcase": true,
+  "eqeqeq": true,
+  "esversion": 6,
+  "indent": true,
+  "jasmine": true,
+  "node": true,
+  "strict": false,
+  "undef": true,
+  "unused": true
+}

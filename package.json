@@ -1,0 +1,29 @@
+{
+  "name": "RunnerClient",
+  "version": "1.0.0",
+  "description": "A REST Client to interact with the Compass / Sony Pictures Runner API",
+  "main": "dist/runner_client.js",
+  "module": "src/index.js",
+  "author": "Sony Pictures DMG <runner@spe.sony.com>",
+  "license": "All Rights Reserved.",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "clean": "rm -r dist",
+    "lint": "jshint",
+    "serve": "serve",
+    "test": "babel-node spec/run.js"
+  },
+  "devDependencies": {
+    "axios": "^0.18.0",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "jasmine": "^3.1.0",
+    "jshint": "^2.9.5",
+    "serve": "^7.1.5",
+    "webpack": "^4.10.2",
+    "webpack-cli": "^2.1.4"
+  },
+  "dependencies": {}
+}
