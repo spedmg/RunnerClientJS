@@ -1,8 +1,4 @@
-const METHODS = {
-  COOKIE: 'cookie',
-  OAUTH: 'oauth',
-  TOKEN: 'token'
-};
+import { METHODS } from '../constants';
 
 class Authentication {
   static set method(authMethod) {
@@ -16,7 +12,5 @@ class Authentication {
     return this._method;
   }
 }
-
-Object.assign(Authentication, { METHODS });
 
 export { Authentication };

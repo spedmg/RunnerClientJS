@@ -9,17 +9,17 @@ module.exports = {
     libraryExport: 'default',
     libraryTarget: 'var'
   },
-  externals: {
-    axios: {
-      commonjs: 'axios',
-      commonjs2: 'axios',
-      amd: 'axios',
-      root: 'axios'
-    }
-  },
+  // externals: ['axios', 'lodash'],
   module: {
     rules: [
       { test: /\.js$/, use: 'babel-loader' }
     ]
-  }
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist',
+    index: 'example.html',
+    overlay: true
+  },
+  mode: 'development'
 };
