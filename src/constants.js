@@ -21,5 +21,14 @@ const TOP_LEVEL_METADATA_FIELDS = [
   'usage_status',
 ];
 
+const DEFAULT_HTTP_HEADERS = {
+  'Accept': 'application/json',
+  'X-Requested-With': 'RunnerClient'
+};
 
-export { METHODS, RUNNER_ENVS, TOP_LEVEL_METADATA_FIELDS };
+export {
+  DEFAULT_HTTP_HEADERS,
+  METHODS,
+  RUNNER_ENVS,
+  TOP_LEVEL_METADATA_FIELDS
+};

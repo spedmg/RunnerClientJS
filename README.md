@@ -8,7 +8,7 @@ A JavaScript library for interactions with the Sony Pictures Compass API.
 ## Module usage
 
 ```javascript
-import RunnerClient from 'runner-client';
+import RunnerClient from 'runnerclient';
 ```
 
 ## Browser Usage
@@ -23,6 +23,7 @@ RunnerClient.configure({
   environment: RunnerClient.RUNNER_ENVS.PRODUCTION, // optional, defaults to production
   authentication: {
     method: RunnerClient.METHODS.TOKEN // required.
+    token: 'abc123' // required for 'token' method 
   }
 });
 ```

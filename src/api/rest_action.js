@@ -1,3 +1,4 @@
+import { DEFAULT_HTTP_HEADERS } from '../constants';
 import { Config } from '../config';
 import { Authentication } from '../config/authentication';
 import axios from 'axios';
@@ -13,8 +14,8 @@ class RestAction {
   static get http() {
     if (!this._axios) {
       this._axios = axios.create({
-        baseUrl: Config.baseURI,
-        headers: Authentication.httpHeaders
+        baseURL: Config.baseURI,
+        headers: Object.assign({}, DEFAULT_HTTP_HEADERS, Authentication.httpHeaders)
       });
     }
     return this._axios;
