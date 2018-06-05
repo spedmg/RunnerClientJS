@@ -9,7 +9,7 @@ module.exports = {
     libraryExport: 'default',
     libraryTarget: 'var'
   },
-  // externals: ['axios', 'lodash'],
+  externals: { asperaconnect: 'AW4' },
   module: {
     rules: [
       { test: /\.js$/, use: 'babel-loader' }
@@ -18,7 +18,6 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist',
-    index: 'example.html',
     overlay: true
   },
   mode: 'development'

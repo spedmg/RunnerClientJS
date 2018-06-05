@@ -14,8 +14,8 @@ class Authentication {
   }
 
   static set token(token) {
-    if (!(typeof token === 'string')) {
-      throw new Error(`[RunnerClient] Token must be a string.`);i
+    if (typeof token !== 'string') {
+      throw new Error(`[RunnerClient] Token must be a string.`);
     }
     this._token = token;
   }

@@ -81,10 +81,11 @@
   "yui"           : false,    // Yahoo User Interface
 
   "globals"       : {
-    "async":        : false,
-    "await":        : false,
+    "async"         : false,
+    "await"         : false,
+    "context"       : false,
     "specify"       : false,
     "spyOnProperty" : false,
-    "context"       : false
+    "td"            : false
   }
 }
