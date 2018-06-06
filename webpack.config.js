@@ -20,5 +20,12 @@ module.exports = {
     contentBase: './dist',
     overlay: true
   },
+  resolve: {
+    alias: {
+      API: path.resolve(__dirname, 'src/api'),
+      Config: path.resolve(__dirname, 'src/config'),
+      Services: path.resolve(__dirname, 'src/services')
+    }
+  },
   mode: 'development'
 };
