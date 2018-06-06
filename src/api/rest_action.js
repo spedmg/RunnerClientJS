@@ -4,11 +4,16 @@ import { Authentication } from '../config/authentication';
 import axios from 'axios';
 
 class RestAction {
+  static get(endpoint, config) {
+    return this.http.get(endpoint, config);
+  }
+
+  static patch(endpoint, data) {
+    return this.http.patch(endpoint, data);
+  }
+
   static post(endpoint, data) {
-    return this.http.post(
-      endpoint,
-      data
-    );
+    return this.http.post(endpoint, data);
   }
 
   static get http() {

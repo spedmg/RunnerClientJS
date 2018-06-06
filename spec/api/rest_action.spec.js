@@ -55,6 +55,38 @@ describe('RestAction', () => {
     });
   });
 
+  describe('RestAction.get()', () => {
+    specify(async () => {
+      let url = '/path/to/something';
+      let data = { abc: 123, xyz: 987 };
+
+      let promise = subject.post(url, data);
+
+      await expectRequestWith('post', `${baseURI}${url}`, data);
+
+      await promise.then((response) => {
+        expect(response.status).toEqual(defaultResponse.status);
+        expect(response.data).toEqual(defaultResponse.response);
+      });
+    });
+  });
+
+  describe('RestAction.post()', () => {
+    specify(async () => {
+      let url = '/path/to/something';
+      let data = { abc: 123, xyz: 987 };
+
+      let promise = subject.post(url, data);
+
+      await expectRequestWith('post', `${baseURI}${url}`, data);
+
+      await promise.then((response) => {
+        expect(response.status).toEqual(defaultResponse.status);
+        expect(response.data).toEqual(defaultResponse.response);
+      });
+    });
+  });
+
   describe('RestAction.post()', () => {
     specify(async () => {
       let url = '/path/to/something';
