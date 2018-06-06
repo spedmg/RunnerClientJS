@@ -6,14 +6,14 @@ class Config {
     if (Authentication.method === METHODS.COOKIE ) { return; }
 
     switch (this.environment) {
-      case RUNNER_ENVS.PRODUCTION:
-        return 'https://sonypicturesrunner.com';
-      case RUNNER_ENVS.STAGING:
-        return 'https://staging.sonypicturesrunner.com';
-      case RUNNER_ENVS.INTEGRATION:
-        return 'https://integration.sonypicturesrunner.com';
-      case RUNNER_ENVS.DEVELOPMENT:
-        return 'http://localhost:3000';
+    case RUNNER_ENVS.PRODUCTION:
+      return 'https://sonypicturesrunner.com';
+    case RUNNER_ENVS.STAGING:
+      return 'https://staging.sonypicturesrunner.com';
+    case RUNNER_ENVS.INTEGRATION:
+      return 'https://integration.sonypicturesrunner.com';
+    case RUNNER_ENVS.DEVELOPMENT:
+      return 'http://localhost:3000';
     }
   }
 

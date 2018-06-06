@@ -65,19 +65,19 @@ class AsperaConnectService {
     this._executeEventListenersFor('status', eventData);
 
     switch(eventData) {
-      case AW4.Connect.STATUS.INITIALIZING:
-      case AW4.Connect.STATUS.RETRYING:
-        this.connectInstaller.showLaunching();
-        break;
-      case AW4.Connect.STATUS.FAILED:
-        this.connectInstaller.showDownload();
-        break;
-      case AW4.Connect.STATUS.OUTDATED:
-        this.connectInstaller.showUpdate();
-        break;
-      case AW4.Connect.STATUS.RUNNING:
-        this.connectInstaller.connected();
-        break;
+    case AW4.Connect.STATUS.INITIALIZING:
+    case AW4.Connect.STATUS.RETRYING:
+      this.connectInstaller.showLaunching();
+      break;
+    case AW4.Connect.STATUS.FAILED:
+      this.connectInstaller.showDownload();
+      break;
+    case AW4.Connect.STATUS.OUTDATED:
+      this.connectInstaller.showUpdate();
+      break;
+    case AW4.Connect.STATUS.RUNNING:
+      this.connectInstaller.connected();
+      break;
     }
   }
 

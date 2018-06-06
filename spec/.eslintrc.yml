@@ -1,0 +1,8 @@
+---
+env:
+  jasmine: true
+globals:
+  context: false
+  fspecify: false
+  specify: false
+  td: false

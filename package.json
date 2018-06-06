@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode=production",
-    "lint": "jshint src/ spec/",
+    "lint": "eslint src/ spec/",
     "start": "webpack-dev-server --open",
     "test": "karma start spec/support/karma.config.js"
   },
@@ -18,8 +18,8 @@
     "babel-loader": "^7.1.4",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
+    "eslint": "^4.19.1",
     "jasmine": "^3.1.0",
-    "jshint": "^2.9.5",
     "karma": "^2.0.2",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.2",

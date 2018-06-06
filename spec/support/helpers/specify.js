@@ -3,7 +3,7 @@ global.specify = function(expectation) {
 };
 
 global.fspecify = function(expectation) {
- fit('specify', expectation);
+  fit('specify', expectation);
 };
 
 global.context = function(context, expectation) {

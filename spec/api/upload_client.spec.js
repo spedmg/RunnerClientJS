@@ -42,14 +42,16 @@ describe('UploadClient', () => {
       describe('given no metadata', () => {
         it('makes a post call for a new upload', async function () {
           let expectedData = {
-            asset_items: [{
-              folder_ids: ['foo', 'bar'],
-              name: 'runner.mov'
-            },
+            asset_items: [
+              {
+                folder_ids: ['foo', 'bar'],
+                name: 'runner.mov'
+              },
               {
                 folder_ids: ['foo', 'bar'],
                 name: 'admin.txt'
-              }],
+              }
+            ],
             exclude_asset_items: true,
           };
 
@@ -73,7 +75,7 @@ describe('UploadClient', () => {
         describe('given no custom metadata', () => {
           it('makes a post call for a new upload', async function () {
             let metadata = {
-              asset_type: "Foo type"
+              asset_type: 'Foo type'
             };
 
             let expectedData = {
@@ -111,7 +113,7 @@ describe('UploadClient', () => {
         describe('given some custom metadata', () => {
           it('makes a post call for a new upload', async () => {
             let metadata = {
-              asset_type: "Foo type",
+              asset_type: 'Foo type',
               custom_metadata_fields: [ { category: 'fooCategory', label: 'barLabel', value: 'lolzy' } ]
             };
 
@@ -156,7 +158,7 @@ describe('UploadClient', () => {
         describe('given titles', () => {
           it('makes a post call for a new upload', async () => {
             let metadata = {
-              asset_type: "Foo type",
+              asset_type: 'Foo type',
               custom_metadata_fields: [],
               titles: [
                 { id: 1, gpms_id: 55449, alpha: {alpha_id: 123456} },
@@ -242,7 +244,7 @@ describe('UploadClient', () => {
 
     describe('when given http option', () => {
       it('makes a post call for a new upload', async () => {
-          let expectedData = {
+        let expectedData = {
           asset_items: [
             {
               folder_ids: ['foo', 'bar'],

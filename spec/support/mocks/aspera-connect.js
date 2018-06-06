@@ -30,7 +30,7 @@ const AW4 = {
       let eventName = 'transfer';
       let mockTransferSpec = { paths:
         {
-          find: function (evaluator) { return true; },
+          find: function () { return true; },
         }
       };
 

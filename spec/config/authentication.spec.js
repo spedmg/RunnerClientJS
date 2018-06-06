@@ -21,17 +21,17 @@ describe('Authentication', () => {
 
   describe('token =', () => {
     it('persists the set token', () => {
-      subject.token = 'foo'
+      subject.token = 'foo';
 
       expect(subject.token).toEqual('foo');
     });
 
     it('ensures the token is a string', () => {
-      expect(() => { subject.token = 123 }).toThrow();
-      expect(() => { subject.token = { a: 'b'} }).toThrow();
-      expect(() => { subject.token = undefined }).toThrow();
-      expect(() => { subject.token = NaN }).toThrow();
-      expect(() => { subject.token = [] }).toThrow();
+      expect(() => { subject.token = 123; }).toThrow();
+      expect(() => { subject.token = { a: 'b'}; }).toThrow();
+      expect(() => { subject.token = undefined; }).toThrow();
+      expect(() => { subject.token = NaN; }).toThrow();
+      expect(() => { subject.token = []; }).toThrow();
     });
   });
 
