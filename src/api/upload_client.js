@@ -1,6 +1,7 @@
 import { TOP_LEVEL_METADATA_FIELDS } from '../constants';
 import { RestAction } from './rest_action';
-import { cloneDeep, isNull } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
+import isNull from 'lodash/isNull';
 
 const getTopLevelFields = function (metadata) {
   let returnObj = {};
