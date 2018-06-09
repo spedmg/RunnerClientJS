@@ -4,25 +4,43 @@ const REQUIRED_ASPERA_VERSION = '3.7.4';
 const DEFAULT_EVENT_CALLBACKS = {
   transfer: [],
   transferComplete: [],
-  status: []
+  status: [],
+  start: []
 };
 
 class AsperaConnectService {
-  constructor(eventCallbacks) {
-    this.connect = new AW4.Connect({
+  static initialize() {
+    this._connect = new AW4.Connect({
       id: `RunnerClient${Math.floor(Math.random() * 10000)}`,
       dragDropEnabled: true,
       minVersion: REQUIRED_ASPERA_VERSION
     });
     this.connectInstaller = new AW4.ConnectInstaller();
-    this.connect.addEventListener(AW4.Connect.EVENT.STATUS, this._handleAsperaEvent);
+    this._connect.addEventListener(AW4.Connect.EVENT.STATUS, this._handleAsperaEvent);
 
     this.activeTransfers = {};
     this.uploadBatchCount = 0;
-    this.eventCallbacks = Object.assign(DEFAULT_EVENT_CALLBACKS, eventCallbacks);
   }
 
-  start(transferSpecs, connectionSettings) {
+  static set eventCallbacks(eventCallbacks) {
+    this._eventCallbacks = Object.assign({}, DEFAULT_EVENT_CALLBACKS, eventCallbacks);
+  }
+
+  static get eventCallbacks() {
+    if (!this._eventCallbacks) {
+      this._eventCallbacks = Object.assign({}, DEFAULT_EVENT_CALLBACKS);
+    }
+    return this._eventCallbacks;
+  }
+
+  static get connect() {
+    if (!this._connect) {
+      this.initialize();
+    }
+    return this._connect;
+  }
+
+  static start(transferSpecs, connectionSettings) {
     this.connect.addEventListener(AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent);
 
     let allPromises = [];
@@ -52,16 +70,16 @@ class AsperaConnectService {
     return { id: this.uploadBatchCount, promise: Promise.all(allPromises) };
   }
 
-  _handleAsperaEvent(eventName, eventData) {
+  static _handleAsperaEvent(eventName, eventData) {
     if (eventName === AW4.Connect.EVENT.STATUS)   { this._handleAsperaStatusEvent(eventData); }
     if (eventName === AW4.Connect.EVENT.TRANSFER) { this._handleAsperaTransferEvent(eventData); }
   }
 
-  _executeEventListenersFor(eventName, eventData) {
+  static _executeEventListenersFor(eventName, eventData) {
     this.eventCallbacks[eventName].forEach(cb => cb(eventData));
   }
 
-  _handleAsperaStatusEvent(eventData) {
+  static _handleAsperaStatusEvent(eventData) {
     this._executeEventListenersFor('status', eventData);
 
     switch(eventData) {
@@ -81,7 +99,10 @@ class AsperaConnectService {
     }
   }
 
-  _handleAsperaTransferEvent(eventData) {
+  static _handleAsperaTransferEvent(eventData) {
+    // TODO: register token to activityUploadService
+    console.log('Recieved transfer event...', eventData);
+
     if (eventData.result_count > 0) {
       eventData.transfers.forEach((transfer) => {
         if (transfer.transfer_spec) {
@@ -115,11 +136,11 @@ class AsperaConnectService {
     if (!this.hasActiveTransfers) { this._removeTransferListener(); }
   }
 
-  get hasActiveTransfers() {
+  static get hasActiveTransfers() {
     return !!Object.keys(this.activeTransfers).length;
   }
 
-  _getTransferDataFor(transfer) {
+  static _getTransferDataFor(transfer) {
     for (let id in this.activeTransfers) {
       if (!this.activeTransfers.hasOwnProperty(id)) { continue; }
 
@@ -132,7 +153,7 @@ class AsperaConnectService {
     }
   }
 
-  _removeTransferListener() {
+  static _removeTransferListener() {
     this.connect.removeEventListener(AW4.Connect.EVENT.TRANSFER);
   }
 }

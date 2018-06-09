@@ -1,4 +1,5 @@
 import packageInfo from '../package.json';
+import Components from './components';
 import Config from './config';
 import API from './api';
 import { METHODS, RUNNER_ENVS } from './constants';
@@ -16,10 +17,12 @@ class RunnerClient {
       if (method) { Config.Authentication.method = method; }
       if (token) { Config.Authentication.token = token; }
     }
+    Components.register();
   }
 }
 
-Object.assign(RunnerClient, { API, METHODS, RUNNER_ENVS });
+Object.assign(RunnerClient, { API, Components, METHODS, RUNNER_ENVS });
+
 
 export { RunnerClient };
 export default RunnerClient;

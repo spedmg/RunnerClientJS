@@ -12,6 +12,9 @@ const AW4 = {
     this.getStatus = function () {
       return 'RUNNING';
     };
+    this.connectHttpRequest = function (method, path, data, sessionId, callbacks) {
+      callbacks.success({ files: [] });
+    };
     this.initSession = function () { };
     this.plugin = function () { };
     this.removeEventListener = function () { };

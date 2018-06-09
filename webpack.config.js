@@ -9,7 +9,11 @@ module.exports = {
     libraryExport: 'default',
     libraryTarget: 'var'
   },
-  externals: { asperaconnect: 'AW4' },
+  externals: {
+    asperaconnect: 'AW4',
+    shadycss: 'ShadyCSS',
+    webcomponents: 'WebComponents'
+  },
   module: {
     rules: [
       { test: /\.js$/, use: 'babel-loader' }
@@ -17,12 +21,12 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: './dist',
-    overlay: true
+    index: 'dist/index.html'
   },
   resolve: {
     alias: {
       API: path.resolve(__dirname, 'src/api'),
+      Components: path.resolve(__dirname, 'src/components'),
       Config: path.resolve(__dirname, 'src/config'),
       Services: path.resolve(__dirname, 'src/services')
     }

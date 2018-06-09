@@ -5,8 +5,18 @@
 <script src="//d3gcli72yxqn2z.cloudfront.net/connect/v4/connectinstaller-4.min.js"></script>
 <script src="//d3gcli72yxqn2z.cloudfront.net/connect/v4/asperaweb-4.min.js"></script>
 
+<script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 <script src="runner_client.js"></script>
+<script>
+  RunnerClient.configure({
+    authentication: {
+      method: RunnerClient.METHODS.COOKIE
+    },
+    environment: RunnerClient.RUNNER_ENVS.DEVELOPMENT
+  });
+</script>
 
 <body>
   <p>This is an example usage of RunnerClient.js</p>
+  <spe-file-drop></spe-file-drop>
 </body>

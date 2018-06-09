@@ -8,6 +8,9 @@ function requireAll(r) {
   });
 }
 require('babel-polyfill');
+require('@webcomponents/webcomponentsjs/webcomponents-bundle.js');
+
+window.WebComponents.waitFor = (cb) => { cb(); };
 
 requireAll(require.context('./helpers', true, /\.js$/));
 requireAll(require.context('./mocks', true, /\.js$/));

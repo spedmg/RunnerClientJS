@@ -32,11 +32,13 @@ describe('AsperaConnectService', () => {
     ).thenReturn(connectInstanceDouble);
 
     AW4.Connect = connectConstructorDouble;
-    subject = new AsperaConnectService(eventCallbacks);
+    subject = class extends AsperaConnectService {};
+    subject.eventCallbacks = eventCallbacks;
   });
 
-  describe('constructor()', () => {
+  describe('initialize()', () => {
     it('sets up a new instance of AW4.Connect', () => {
+      subject.initialize();
       expect().toVerify(connectInstanceDouble.addEventListener('status', td.matchers.isA(Function)));
     });
   });
