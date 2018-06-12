@@ -1,8 +1,9 @@
+import values from 'lodash/values';
 import { METHODS } from '../constants';
 
 class Authentication {
   static set method(authMethod) {
-    let validMethods = Object.values(METHODS);
+    let validMethods = values(METHODS);
     if (!validMethods.includes(authMethod)) {
       throw new Error(`method must be one of: ${validMethods}`);
     }

@@ -1,3 +1,4 @@
+import values from 'lodash/values';
 import { Authentication } from './config/authentication';
 import { METHODS, RUNNER_ENVS, LOG_LEVELS } from './constants';
 import translations from './translations';
@@ -21,7 +22,7 @@ class Config {
   }
 
   static set environment(env) {
-    let validEnvs = Object.values(RUNNER_ENVS);
+    let validEnvs = values(RUNNER_ENVS);
 
     if (!validEnvs.includes(env)) {
       throw new Error(`[RunnerClient] Failed to set environment to ${env}. Allowed values: ${validEnvs}`);
@@ -56,7 +57,7 @@ class Config {
   }
 
   static set logLevel(level) {
-    if (!Object.values(LOG_LEVELS).includes(level)) {
+    if (!values(LOG_LEVELS).includes(level)) {
       throw new Error(`[RunnerClient] "${level}" is an invalid log level.`);
     }
     this._logLevel = level;
