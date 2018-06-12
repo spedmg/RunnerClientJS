@@ -16,7 +16,7 @@ class AsperaConnectService {
       minVersion: REQUIRED_ASPERA_VERSION
     });
     this.connectInstaller = new AW4.ConnectInstaller();
-    this._connect.addEventListener(AW4.Connect.EVENT.STATUS, this._handleAsperaEvent);
+    this._connect.addEventListener(AW4.Connect.EVENT.STATUS, this._handleAsperaEvent.bind(this));
 
     this.activeTransfers = {};
     this.uploadBatchCount = 0;
@@ -41,7 +41,7 @@ class AsperaConnectService {
   }
 
   static start(transferSpecs, connectionSettings) {
-    this.connect.addEventListener(AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent);
+    this.connect.addEventListener(AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent.bind(this));
 
     let allPromises = [];
     let tokens      = [];

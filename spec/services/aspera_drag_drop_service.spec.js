@@ -4,6 +4,8 @@ import AW4 from 'asperaconnect';
 
 describe('AsperaDragDropService', () => {
   let subject;
+  let target;
+  let callbacks;
   let connectInstance;
   let defaultEventOpts = { bubble: true, cancelable: true, view: window };
 
@@ -12,27 +14,22 @@ describe('AsperaDragDropService', () => {
     spyOnProperty(AsperaConnectService, 'connect').and.returnValue(connectInstance);
 
     subject = class extends AsperaDragDropService {};
+    target = document.createElement('div');
+    spyOn(target, 'addEventListener').and.callThrough();
+    spyOn(target, 'removeEventListener').and.callThrough();
+
+    callbacks = {
+      all: [jasmine.createSpy('all')],
+      dragEnter: [jasmine.createSpy('dragEnter')],
+      dragLeave: [jasmine.createSpy('dragLeave')],
+      dragOver: [jasmine.createSpy('dragOver')],
+      drop: [jasmine.createSpy('drop')],
+    };
+
+    subject.addTarget(target, callbacks);
   });
 
   describe('.addTarget()', () => {
-    let target;
-    let callbacks;
-
-    beforeEach(() => {
-      target = document.createElement('div');
-      spyOn(target, 'addEventListener').and.callThrough();
-
-      callbacks = {
-        all: [jasmine.createSpy('all')],
-        dragEnter: [jasmine.createSpy('dragEnter')],
-        dragLeave: [jasmine.createSpy('dragLeave')],
-        dragOver: [jasmine.createSpy('dragOver')],
-        drop: [jasmine.createSpy('drop')],
-      };
-
-      subject.addTarget(target, callbacks);
-    });
-
     it('adds event listeners to the given target', () => {
       expect(target.addEventListener).toHaveBeenCalledWith('dragenter', jasmine.any(Function));
       expect(target.addEventListener).toHaveBeenCalledWith('dragleave', jasmine.any(Function));
@@ -86,32 +83,60 @@ describe('AsperaDragDropService', () => {
       let event;
 
       beforeEach(() => {
-        let file = { name: 'jeanluc.picard' };
-        let nestedFile = { name: 'will.riker', path: 'enterprise/will.riker' };
+        let file = new File(['make it so'], 'jeanluc.picard', { type: 'text/plain' });
+        let nestedFile = new File(['engage'], 'will.riker', { type: 'text/plain' });
         let folder = {
-          name: 'enterprise',
-          path: '/',
-          getFilesAndDirectories: () => Promise.resolve([nestedFile])
+          name: 'stargazer',
+          path: '/stargazer',
+          getFilesAndDirectories: () => { return { then: (cb) => { cb([file, nestedFolder]); } }; }
         };
+        let nestedFolder = {
+          name: 'enterprise',
+          path: '/stargazer/enterprise',
+          getFilesAndDirectories: () => { return { then: (cb) => { cb([nestedFile]); } }; }
+        };
+
         event = new Event('drop', defaultEventOpts);
         event.dataTransfer = {
-          getFilesAndDirectories: () => {
-            return Promise.resolve([file, folder]);
-          }
+          files: [folder],
+          getFilesAndDirectories: () => { return { then: (cb) => { cb([folder]); } }; }
         };
         target.dispatchEvent(event);
         spyOn(connectInstance, 'connectHttpRequest').and.callThrough();
       });
 
       it('triggers event listeners', () => {
-        console.log(callbacks.drop[0].calls.first());
-        // expect(callbacks.all[0]).toHaveBeenCalledWith({ event: event });
-        // expect(callbacks.drop[0]).toHaveBeenCalledWith({ event: event });
+        let expected = jasmine.objectContaining ({
+          event: event,
+          dragDropManifestGrouping: {
+            'stargazer': [
+              '/stargazer/jeanluc.picard',
+              '/stargazer/enterprise/will.riker'
+            ]
+          }
+        });
+        expect(callbacks.all[0]).toHaveBeenCalledWith(expected);
+        expect(callbacks.drop[0]).toHaveBeenCalledWith(expected);
       });
     });
   });
 
   describe('.reset()', () => {
-
+    specify(() => {
+      expect(subject.target).toBeDefined();
+      subject.reset();
+      expect(subject.target).toBeUndefined();
+      expect(target.removeEventListener).toHaveBeenCalledWith('dragenter', subject._dragEnterCallback);
+      expect(target.removeEventListener).toHaveBeenCalledWith('dragleave', subject._dragLeaveCallback);
+      expect(target.removeEventListener).toHaveBeenCalledWith('dragover', subject._dragOverCallback);
+      expect(target.removeEventListener).toHaveBeenCalledWith('drop', subject._dropCallback);
+      expect(subject.eventCallbacks).toEqual({
+        all: [],
+        dragEnter: [],
+        dragLeave: [],
+        dragOver: [],
+        drop: []
+      });
+    });
   });
 });

@@ -1,3 +1,4 @@
+import '../../vendor/directory-upload-polyfill';
 import { AsperaConnectService } from 'Services/aspera_connect_service';
 import AW4 from 'asperaconnect';
 
@@ -11,6 +12,10 @@ const DEFAULT_EVENT_CALLBACKS = {
 
 class AsperaDragDropService {
   static addTarget(target, eventCallbacks) {
+    AsperaConnectService.connect.initSession();
+    this.target = target;
+
+    console.log('addEventListeners...');
     let callbacks = Object.assign({}, DEFAULT_EVENT_CALLBACKS, eventCallbacks);
     let registerAll = !!callbacks.all.length;
     if (!!callbacks.dragEnter.length || registerAll) {
@@ -30,8 +35,7 @@ class AsperaDragDropService {
       target.addEventListener('drop', this._dropCallback);
     }
 
-    this.eventCallbacks = eventCallbacks;
-    this.target = target;
+    this.eventCallbacks = callbacks;
   }
 
   static reset() {
@@ -40,7 +44,18 @@ class AsperaDragDropService {
     this.target.removeEventListener('dragover', this._dragOverCallback);
     this.target.removeEventListener('drop', this._dropCallback);
     this.eventCallbacks = Object.assign({}, DEFAULT_EVENT_CALLBACKS);
-    this.target = undefined;
+    this._target = undefined;
+  }
+
+  static get target() {
+    return this._target;
+  }
+
+  static set target(el) {
+    if (this._target) {
+      throw new Error('[RunnerClient.AsperaDragDropService] Cannot set more than one target!');
+    }
+    this._target = el;
   }
 
   static dragEnterCallback(event) {
@@ -66,6 +81,7 @@ class AsperaDragDropService {
     event.preventDefault();
 
     let manifestGrouping = this._groupedFolderContents(event);
+    console.log(manifestGrouping);
     let filesDropped = event.dataTransfer.files;
     let data = {};
     data.dataTransfer = {};
@@ -88,7 +104,7 @@ class AsperaDragDropService {
 
     AsperaConnectService.connect.connectHttpRequest(
       AW4.Connect.HTTP_METHOD.POST,
-      '/file/dropped-files',
+      '/connect/file/dropped-files',
       data,
       AW4.Utils.SESSION_ID,
       { success: dropHelper }
@@ -115,22 +131,22 @@ class AsperaDragDropService {
         }
       });
 
-      console.log(collection)
+      console.log(collection);
       return collection;
     };
 
-    console.log(evt.dataTransfer);
+    console.log(typeof(evt.dataTransfer.getFilesAndDirectories));
     if (typeof(evt.dataTransfer.getFilesAndDirectories) === 'function') {
       evt.dataTransfer.getFilesAndDirectories().then(function(entries) {
         console.log(entries);
         entries.forEach(function (entry) {
+          console.log(entry);
           if (entry.path) {
             grouping[entry.name] = process([entry], entry.name, []);
           }
         });
       });
     }
-    console.log(grouping)
     return grouping;
   }
 }

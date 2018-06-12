@@ -15,6 +15,11 @@
     environment: RunnerClient.RUNNER_ENVS.DEVELOPMENT
   });
 </script>
+<script type="module">
+  WebComponents.waitFor(() => {
+    return RunnerClient.importComponents();
+  });
+</script>
 
 <body>
   <p>This is an example usage of RunnerClient.js</p>

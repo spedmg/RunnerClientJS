@@ -1,7 +1,6 @@
 import packageInfo from '../package.json';
-import Components from './components';
+import { API } from './api';
 import Config from './config';
-import API from './api';
 import { METHODS, RUNNER_ENVS } from './constants';
 
 class RunnerClient {
@@ -17,12 +16,14 @@ class RunnerClient {
       if (method) { Config.Authentication.method = method; }
       if (token) { Config.Authentication.token = token; }
     }
-    Components.register();
+  }
+
+  static importComponents() {
+    return import(/* webpackChunkName: 'components' */ './components');
   }
 }
 
-Object.assign(RunnerClient, { API, Components, METHODS, RUNNER_ENVS });
-
+Object.assign(RunnerClient, { API, METHODS, RUNNER_ENVS });
 
 export { RunnerClient };
 export default RunnerClient;

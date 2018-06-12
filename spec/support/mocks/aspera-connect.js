@@ -64,12 +64,19 @@ const AW4 = {
     this.addEventListener = function () { };
     this.showDownload = function () {};
     this.showUpdate = function () {};
+  },
+  Utils: {
+    SESSION_ID: `Foobar${Math.floor(Math.random() * 10000)}`
   }
 };
 
 AW4.Connect.EVENT = {
   STATUS: 'status',
   TRANSFER: 'transfer'
+};
+
+AW4.Connect.HTTP_METHOD = {
+  POST: 'POST',
 };
 
 AW4.Connect.STATUS = {

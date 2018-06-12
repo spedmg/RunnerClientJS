@@ -1,5 +1,5 @@
-import ShadyCSS from 'shadycss';
-import { SPEFileDrop__Incoming } from './spe_file_drop/__incoming';
+import './spe_file_drop/__incoming';
+import { AsperaDragDropService } from 'Services/aspera_drag_drop_service';
 
 const ELEMENT_NAME = 'spe-file-drop';
 const tmpl = document.createElement('template');
@@ -9,13 +9,27 @@ tmpl.innerHTML = `
       display: block;
       position: relative;
       color: green;
+      border: 1px solid #999;
+      height: 500px;
+      width: 500px;
+      background: #ccc;
+    }
+
+    :host[incoming] spe-file-drop--incoming {
+      display: flex;
+      z-index: 10;
     }
   </style>
   Hello from spe-file-drop!
-  <spe-file-drop--incoming incoming></spe-file-drop--incoming>
+  <spe-file-drop--incoming></spe-file-drop--incoming>
 `;
 
-ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
+try {
+  const ShadyCSS = require('shadycss');
+  if (ShadyCSS) {
+    ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
+  }
+} catch (e) { /* do nothing */ }
 
 class SPEFileDrop extends HTMLElement {
   /**
@@ -40,6 +54,20 @@ class SPEFileDrop extends HTMLElement {
    * try to delay work until this time.
    */
   connectedCallback() {
+    AsperaDragDropService.addTarget(this, {
+      dragEnter: [
+        () => { this.incoming = true; }
+      ],
+      dragLeave: [
+        () => { this.incoming = false; }
+      ],
+      drop: [
+        (dragObject) => {
+          this.incoming = false;
+          console.log(`addFiles`, dragObject)
+        }
+      ]
+    });
   }
 
   /**
@@ -66,21 +94,30 @@ class SPEFileDrop extends HTMLElement {
    * change to attributes listed in the observedAttributes array.
    */
   static get observedAttributes() {
-
+    return ['incoming'];
   }
 
-  static register(window) {
-    // Register the custom element to the DOM
-    if (window && window.customElements) {
-      window.customElements.define(
-        this.elName,
-        this
-      );
-    }
+  get incoming() {
+    return this.hasAttribute('incoming');
+  }
 
-    // Register the child elements
-    [SPEFileDrop__Incoming].forEach(el => el.register(window));
+  set incoming(val) {
+    if (val) {
+      this.setAttribute('incoming', '');
+    } else {
+      this.removeAttribute('incoming');
+    }
+  }
+
+  static register() {
+    // Register the custom element to the DOM
+    window.customElements.define(
+      this.elName,
+      this
+    );
   }
 }
+
+SPEFileDrop.register();
 
 export { SPEFileDrop };

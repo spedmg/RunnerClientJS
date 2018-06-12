@@ -45,7 +45,7 @@ class Config {
 
   static set locale(val) {
     if (!Object.keys(translations).includes(val)) {
-      throw new Error(`[RunnerClient] Translations for ${val} are unavailable. Contact Runner support for help.`);
+      throw new Error(`[RunnerClient] Translations for "${val}" are unavailable.`);
     }
     this._locale = val;
   }

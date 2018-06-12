@@ -1,4 +1,3 @@
-import ShadyCSS from 'shadycss';
 import { TranslationService } from 'Services/translation_service';
 const ELEMENT_NAME = 'spe-file-drop--incoming';
 const TRANSLATION_SCOPE = { scope: 'SPEFileDrop.Incoming' };
@@ -17,14 +16,16 @@ tmpl.innerHTML = `
       position: absolute;
       width: 100%;
     }
-
-    :host[incoming] {
-      display: flex;
-    }
   </style>
   <h1>${t('headingText')}</h1>
 `;
-ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
+
+try {
+  const ShadyCSS = require('shadycss');
+  if (ShadyCSS) {
+    ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
+  }
+} catch (e) { /* do nothing */ }
 
 class SPEFileDrop__Incoming extends HTMLElement {
   static get elName() { return ELEMENT_NAME; }
@@ -35,23 +36,7 @@ class SPEFileDrop__Incoming extends HTMLElement {
     shadowRoot.appendChild(tmpl.content.cloneNode(true));
   }
 
-  static get observedAttributes() {
-    return ['incoming'];
-  }
-
-  get incoming() {
-    return this.hasAttribute('incoming');
-  }
-
-  set incoming(val) {
-    if (val) {
-      this.setAttribute('incoming', '');
-    } else {
-      this.removeAttrinute('incoming');
-    }
-  }
-
-  static register(window) {
+  static register() {
     // Register the custom element to the DOM
     if (window && window.customElements) {
       window.customElements.define(
@@ -62,5 +47,6 @@ class SPEFileDrop__Incoming extends HTMLElement {
   }
 }
 
+SPEFileDrop__Incoming.register();
 
 export { SPEFileDrop__Incoming };
