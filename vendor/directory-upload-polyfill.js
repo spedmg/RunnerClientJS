@@ -3,8 +3,8 @@
  Author: Ali Alabbas (Microsoft)
  https://github.com/WICG/directory-upload
  **********************************/
-(function () {
-  var performPolyfill = function() {
+module.exports = {
+  PolyfillDirectoryAPI: function() {
     // Do not proceed with the polyfill if Directory interface is already natively available,
     // or if webkitdirectory is not supported (i.e. not Chrome, since the polyfill only works in Chrome)
     if (!('webkitdirectory' in document.createElement('input') && 'webkitGetAsEntry' in DataTransferItem.prototype)) {
@@ -308,6 +308,7 @@
     };
 
     EventTarget.prototype.addEventListener = function(type, listener, useCapture) {
+      console.log('addEventListener', type);
       if (type === 'drop') {
         var _listener = listener;
 
@@ -328,9 +329,5 @@
       return _addEventListener.apply(this, arguments);
     };
 
-    document.removeEventListener('readystatechange', performPolyfill);
-  };
-
-  document.addEventListener('readystatechange', performPolyfill);
-})();
-
+  }
+};

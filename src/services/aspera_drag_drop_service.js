@@ -1,5 +1,5 @@
-import '../../vendor/directory-upload-polyfill';
 import { AsperaConnectService } from 'Services/aspera_connect_service';
+import { LogService } from 'Services/log_service';
 import AW4 from 'asperaconnect';
 
 const DEFAULT_EVENT_CALLBACKS = {
@@ -15,7 +15,6 @@ class AsperaDragDropService {
     AsperaConnectService.connect.initSession();
     this.target = target;
 
-    console.log('addEventListeners...');
     let callbacks = Object.assign({}, DEFAULT_EVENT_CALLBACKS, eventCallbacks);
     let registerAll = !!callbacks.all.length;
     if (!!callbacks.dragEnter.length || registerAll) {
@@ -81,7 +80,6 @@ class AsperaDragDropService {
     event.preventDefault();
 
     let manifestGrouping = this._groupedFolderContents(event);
-    console.log(manifestGrouping);
     let filesDropped = event.dataTransfer.files;
     let data = {};
     data.dataTransfer = {};
@@ -120,33 +118,36 @@ class AsperaDragDropService {
     let grouping = {};
     let process = function(entries, path, collection) {
       entries.forEach(function (entry) {
-        if (typeof(entry.getFilesAndDirectories) === 'function') {
-          (function (path) {
-            entry.getFilesAndDirectories().then(function(childEntries) {
+        if (entry.isDirectory) {
+          ((path) => {
+            let reader = entry.createReader();
+            reader.readEntries((childEntries) => {
               process(childEntries, path, collection);
+            }, (err) => {
+              LogService.warn(`Failed to read directory contents for ${entry.fullPath}`, err);
             });
-          })(entry.path || path);
+          })(entry.fullPath || path);
         } else {
           collection.push(path + '/' + entry.name);
         }
       });
 
-      console.log(collection);
       return collection;
     };
 
-    console.log(typeof(evt.dataTransfer.getFilesAndDirectories));
-    if (typeof(evt.dataTransfer.getFilesAndDirectories) === 'function') {
-      evt.dataTransfer.getFilesAndDirectories().then(function(entries) {
-        console.log(entries);
-        entries.forEach(function (entry) {
-          console.log(entry);
-          if (entry.path) {
-            grouping[entry.name] = process([entry], entry.name, []);
-          }
+    for (let i = 0; i < evt.dataTransfer.items.length; i++) {
+      let item = evt.dataTransfer.items[i];
+      let fsEntry = item.webkitGetAsEntry();
+      if (fsEntry.isDirectory) {
+        let reader = fsEntry.createReader();
+        reader.readEntries((entries) => {
+          grouping[fsEntry.name] = process(entries, fsEntry.fullPath, []);
+        }, (err) => {
+          LogService.warn(`Failed to read directory contents for ${fsEntry.fullPath}`, err);
         });
-      });
+      }
     }
+
     return grouping;
   }
 }

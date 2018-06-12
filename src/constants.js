@@ -3,6 +3,13 @@ const DEFAULT_HTTP_HEADERS = {
   'X-Requested-With': 'RunnerClient'
 };
 
+const LOG_LEVELS = {
+  DEBUG: 'debug',
+  INFO: 'info',
+  WARN: 'warn',
+  NONE: 'none'
+};
+
 const MAX_THUMBNAIL_SIZE = 20000000;
 
 const METHODS = {
@@ -46,6 +53,7 @@ const VALID_THUMBNAIL_FILE_EXTENSIONS = [ '.jpg', '.jpeg', '.png' ];
 
 export {
   DEFAULT_HTTP_HEADERS,
+  LOG_LEVELS,
   MAX_THUMBNAIL_SIZE,
   METHODS,
   RUNNER_ENVS,

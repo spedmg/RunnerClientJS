@@ -1,5 +1,5 @@
 import { Authentication } from './config/authentication';
-import { METHODS, RUNNER_ENVS } from './constants';
+import { METHODS, RUNNER_ENVS, LOG_LEVELS } from './constants';
 import translations from './translations';
 
 const DEFAULT_LOCALE = 'en';
@@ -48,6 +48,31 @@ class Config {
       throw new Error(`[RunnerClient] Translations for "${val}" are unavailable.`);
     }
     this._locale = val;
+  }
+
+  static get logLevel() {
+    if (!this._logLevel) { this._logLevel = LOG_LEVELS.WARN; }
+    return this._logLevel;
+  }
+
+  static set logLevel(level) {
+    if (!Object.values(LOG_LEVELS).includes(level)) {
+      throw new Error(`[RunnerClient] "${level}" is an invalid log level.`);
+    }
+    this._logLevel = level;
+  }
+
+  static get logLevelInt() {
+    switch (this.logLevel) {
+    case LOG_LEVELS.NONE:
+      return 0;
+    case LOG_LEVELS.WARN:
+      return 1;
+    case LOG_LEVELS.INFO:
+      return 2;
+    case LOG_LEVELS.DEBUG:
+      return 3;
+    }
   }
 }
 
