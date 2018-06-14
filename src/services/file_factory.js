@@ -1,6 +1,6 @@
-import { FileNameValidationService } from 'Services/file_name_validation_service';
-import { FileValidationService } from 'Services/file_validation_service';
-import { ThumbnailValidationService } from 'Services/thumbnail_validation_service';
+const { FileNameValidationService } = require('./file_name_validation_service');
+const { FileValidationService } = require('./file_validation_service');
+const { ThumbnailValidationService } = require('./thumbnail_validation_service');
 
 class FileFactory {
   constructor(file) {
@@ -27,4 +27,4 @@ class FileFactory {
   }
 }
 
-export { FileFactory };
+module.exports = { FileFactory };

@@ -1,7 +1,7 @@
-import values from 'lodash/values';
-import { Authentication } from './config/authentication';
-import { METHODS, RUNNER_ENVS, LOG_LEVELS } from './constants';
-import translations from './translations';
+const values = require('lodash/values');
+const { Authentication } = require('./config/authentication');
+const { METHODS, RUNNER_ENVS, LOG_LEVELS } = require('./constants');
+const translations = require('./translations').default;
 
 const DEFAULT_LOCALE = 'en';
 
@@ -79,5 +79,7 @@ class Config {
 
 Object.assign(Config, { Authentication });
 
-export { Config };
-export default Config;
+module.exports = {
+  default: Config,
+  Config
+};

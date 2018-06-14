@@ -1,6 +1,6 @@
-import { AsperaConnectService } from 'Services/aspera_connect_service';
-import { LogService } from 'Services/log_service';
-import AW4 from 'asperaconnect';
+const { AsperaConnectService } = require('./aspera_connect_service');
+const { LogService } = require('./log_service');
+const AW4 = window.AW4;
 
 const DEFAULT_EVENT_CALLBACKS = {
   all: [],
@@ -152,4 +152,4 @@ class AsperaDragDropService {
   }
 }
 
-export { AsperaDragDropService };
+module.exports = { AsperaDragDropService };

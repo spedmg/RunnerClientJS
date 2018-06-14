@@ -87,5 +87,4 @@ AW4.Connect.STATUS = {
   FAILED : 'FAILED'
 };
 
-// global.AW4 = AW4;
 window.AW4 = AW4;

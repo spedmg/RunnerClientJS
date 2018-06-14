@@ -1,7 +1,7 @@
-import packageInfo from '../package.json';
-import { API } from './api';
-import Config from './config';
-import { METHODS, RUNNER_ENVS } from './constants';
+const packageInfo = require('../package.json');
+const { API } = require('./api');
+const { Config } = require('./config');
+const { METHODS, RUNNER_ENVS } = require('./constants');
 
 class RunnerClient {
   static get version () {
@@ -25,5 +25,7 @@ class RunnerClient {
 
 Object.assign(RunnerClient, { API, METHODS, RUNNER_ENVS });
 
-export { RunnerClient };
-export default RunnerClient;
+module.exports = {
+  default: RunnerClient,
+  RunnerClient
+};

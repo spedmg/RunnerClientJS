@@ -1,4 +1,4 @@
-import { RestAction } from 'API/rest_action';
+const { RestAction } = require('./rest_action');
 
 class AssetItemClient {
   static bulkUpdate(assetItems, options) {
@@ -9,4 +9,4 @@ class AssetItemClient {
   }
 }
 
-export { AssetItemClient };
+module.exports = { AssetItemClient };

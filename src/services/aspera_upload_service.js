@@ -1,7 +1,7 @@
-import { API } from '../api';
-import { AsperaConnectService } from 'Services/aspera_connect_service';
-import { AsperaTransferSpecFormatterService } from 'Services/aspera_transfer_spec_formatter_service';
-import { PackageManifestService } from 'Services/package_manifest_service';
+const { API } = require('../api');
+const { AsperaConnectService } = require('./aspera_connect_service');
+const { AsperaTransferSpecFormatterService } = require('./aspera_transfer_spec_formatter_service');
+const { PackageManifestService } = require('./package_manifest_service');
 
 class AsperaUploadService {
   static get activeUploads() {
@@ -98,4 +98,4 @@ class AsperaUploadService {
   }
 }
 
-export { AsperaUploadService };
+module.exports = { AsperaUploadService };

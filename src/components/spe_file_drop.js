@@ -1,5 +1,8 @@
-import './spe_file_drop/__incoming';
-import { AsperaDragDropService } from 'Services/aspera_drag_drop_service';
+require('./spe_file_drop/__incoming');
+const { EVENTS } = require('../constants');
+const { AsperaDragDropService } = require('../services/aspera_drag_drop_service');
+const { AsperaFileSerializer } = require('../services/aspera_file_serializer');
+const { FileUploadService } = require('../services/file_upload_service');
 
 const ELEMENT_NAME = 'spe-file-drop';
 const tmpl = document.createElement('template');
@@ -8,7 +11,6 @@ tmpl.innerHTML = `
     :host {
       display: block;
       position: relative;
-      color: green;
       border: 1px solid #999;
       height: 500px;
       width: 500px;
@@ -24,12 +26,9 @@ tmpl.innerHTML = `
   <spe-file-drop--incoming></spe-file-drop--incoming>
 `;
 
-try {
-  const ShadyCSS = require('shadycss');
-  if (ShadyCSS) {
-    ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
-  }
-} catch (e) { /* do nothing */ }
+if (window.ShadyCSS) {
+  window.ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
+}
 
 class SPEFileDrop extends HTMLElement {
   /**
@@ -64,7 +63,13 @@ class SPEFileDrop extends HTMLElement {
       drop: [
         (dragObject) => {
           this.incoming = false;
-          console.log(`addFiles`, dragObject)
+          FileUploadService.addFiles(
+            this.files,
+            AsperaFileSerializer.serialize(dragObject)
+          ).then(
+            (data) => { this._emitAddedFilesEvent(true, data); },
+            (error) => { this._emitAddedFilesEvent(false, error); },
+          );
         }
       ]
     });
@@ -75,7 +80,7 @@ class SPEFileDrop extends HTMLElement {
    * clean up code.
    */
   disconnectedCallback() {
-
+    AsperaDragDropService.reset();
   }
 
   /**
@@ -109,6 +114,41 @@ class SPEFileDrop extends HTMLElement {
     }
   }
 
+  get files() {
+    if (!this._files) {
+      this.__files = [];
+      this._files = new Proxy(this.__files, this._fileChangeHandler);
+    }
+    return this._files;
+  }
+
+  _emitAddedFilesEvent(success, data) {
+    this.dispatchEvent(
+      new CustomEvent(EVENTS.FILES_ADDED, {
+        detail: Object.assign({ success }, data),
+        bubbles: true,
+      })
+    );
+  }
+
+  get _fileChangeHandler() {
+    let _this = this;
+    return {
+      set(files, prop, value) {
+        console.log('prop', prop);
+        console.log('value', value);
+        console.log(_this);
+        if (prop.match(/^\d+$/)) {
+          let file = document.createElement('p');
+          file.innerText = JSON.stringify(value.fileName);
+          console.log(file);
+          _this.shadowRoot.appendChild(file);
+        }
+        return Reflect.set(...arguments);
+      }
+    };
+  }
+
   static register() {
     // Register the custom element to the DOM
     window.customElements.define(
@@ -120,4 +160,4 @@ class SPEFileDrop extends HTMLElement {
 
 SPEFileDrop.register();
 
-export { SPEFileDrop };
+module.exports = { SPEFileDrop };

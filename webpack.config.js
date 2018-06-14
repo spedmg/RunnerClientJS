@@ -6,13 +6,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'runner_client.js',
     library: 'RunnerClient',
-    libraryExport: 'default',
-    libraryTarget: 'var'
-  },
-  externals: {
-    asperaconnect: 'AW4',
-    shadycss: 'ShadyCSS',
-    webcomponents: 'WebComponents'
+    libraryExport: 'default'
   },
   module: {
     rules: [

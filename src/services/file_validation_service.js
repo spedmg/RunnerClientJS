@@ -8,4 +8,4 @@ class FileValidationService {
   }
 }
 
-export { FileValidationService };
+module.exports = { FileValidationService };

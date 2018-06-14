@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
+const cloneDeep = require('lodash/cloneDeep');
 
 class AsperaTransferSpecFormatterService {
   static formatted(uploadResponseData, files) {
@@ -28,4 +28,4 @@ class AsperaTransferSpecFormatterService {
   }
 }
 
-export { AsperaTransferSpecFormatterService };
+module.exports = { AsperaTransferSpecFormatterService };

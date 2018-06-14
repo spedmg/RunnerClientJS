@@ -1,5 +1,5 @@
-import { VALID_THUMBNAIL_FILE_EXTENSIONS, MAX_THUMBNAIL_SIZE } from '../constants';
-import { FileValidationService } from 'Services/file_validation_service';
+const { VALID_THUMBNAIL_FILE_EXTENSIONS, MAX_THUMBNAIL_SIZE } = require('../constants');
+const { FileValidationService } = require('./file_validation_service');
 
 class ThumbnailValidationService {
   static containsValidExtension(fileName) {
@@ -15,4 +15,4 @@ class ThumbnailValidationService {
   }
 }
 
-export { ThumbnailValidationService };
+module.exports = { ThumbnailValidationService };

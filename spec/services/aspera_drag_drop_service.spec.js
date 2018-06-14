@@ -1,6 +1,6 @@
 import { AsperaDragDropService } from 'Services/aspera_drag_drop_service';
 import { AsperaConnectService } from 'Services/aspera_connect_service';
-import AW4 from 'asperaconnect';
+const AW4 = window.AW4;
 
 describe('AsperaDragDropService', () => {
   let subject;
@@ -86,20 +86,33 @@ describe('AsperaDragDropService', () => {
         let file = new File(['make it so'], 'jeanluc.picard', { type: 'text/plain' });
         let nestedFile = new File(['engage'], 'will.riker', { type: 'text/plain' });
         let folder = {
+          webkitGetAsEntry: () => { return folder; },
           name: 'stargazer',
-          path: '/stargazer',
-          getFilesAndDirectories: () => { return { then: (cb) => { cb([file, nestedFolder]); } }; }
+          fullPath: '/stargazer',
+          isDirectory: true,
+          createReader: () => {
+            return {
+              readEntries: (cb) => { cb([file, nestedFolder]); }
+            };
+          }
         };
+
         let nestedFolder = {
+          webkitGetAsEntry: () => { return nestedFolder; },
           name: 'enterprise',
-          path: '/stargazer/enterprise',
-          getFilesAndDirectories: () => { return { then: (cb) => { cb([nestedFile]); } }; }
+          fullPath: '/stargazer/enterprise',
+          isDirectory: true,
+          createReader: () => {
+            return {
+              readEntries: (cb) => { cb([nestedFile]); }
+            };
+          }
         };
 
         event = new Event('drop', defaultEventOpts);
         event.dataTransfer = {
+          items: [folder],
           files: [folder],
-          getFilesAndDirectories: () => { return { then: (cb) => { cb([folder]); } }; }
         };
         target.dispatchEvent(event);
         spyOn(connectInstance, 'connectHttpRequest').and.callThrough();

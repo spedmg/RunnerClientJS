@@ -1,6 +1,6 @@
-import { AssetItemClient } from 'API/asset_item_client';
-import { IngestBatchClient } from 'API/ingest_batch_client';
-import { UploadClient } from 'API/upload_client';
+const { AssetItemClient } = require('./api/asset_item_client');
+const { IngestBatchClient } = require('./api/ingest_batch_client');
+const { UploadClient } = require('./api/upload_client');
 
 class API {
   static upload(objects, options) {
@@ -16,5 +16,7 @@ class API {
   }
 }
 
-export { API };
-export default API;
+module.exports = {
+  default: API,
+  API
+};

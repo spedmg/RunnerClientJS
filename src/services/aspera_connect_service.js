@@ -1,4 +1,4 @@
-import AW4 from 'asperaconnect';
+const AW4 = window.AW4;
 
 const REQUIRED_ASPERA_VERSION = '3.7.4';
 const DEFAULT_EVENT_CALLBACKS = {
@@ -158,4 +158,4 @@ class AsperaConnectService {
   }
 }
 
-export { AsperaConnectService };
+module.exports = { AsperaConnectService };

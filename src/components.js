@@ -1,7 +1,12 @@
-import { SPEFileDrop } from 'Components/spe_file_drop';
+const { SPEFileDrop } = require('./components/spe_file_drop');
 
-export default class Components {
+class Components {
   static register() {
     Promise.resolve(SPEFileDrop.register(window));
   }
 }
+
+module.exports = {
+  default: Components,
+  Components
+};

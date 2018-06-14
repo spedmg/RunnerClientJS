@@ -1,5 +1,5 @@
 import { AsperaConnectService } from '../../src/services/aspera_connect_service';
-import AW4 from 'asperaconnect';
+const AW4 = window.AW4;
 
 describe('AsperaConnectService', () => {
   let connectConstructorDouble;

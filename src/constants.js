@@ -3,6 +3,10 @@ const DEFAULT_HTTP_HEADERS = {
   'X-Requested-With': 'RunnerClient'
 };
 
+const EVENTS = {
+  FILES_ADDED: 'spe-files-added',
+};
+
 const LOG_LEVELS = {
   DEBUG: 'debug',
   INFO: 'info',
@@ -11,6 +15,7 @@ const LOG_LEVELS = {
 };
 
 const MAX_THUMBNAIL_SIZE = 20000000;
+const MAX_UPLOAD_COUNT = 500;
 
 const METHODS = {
   COOKIE: 'cookie',
@@ -51,10 +56,12 @@ const UNSUPPORTED_FILE_EXTENSIONS = [
 
 const VALID_THUMBNAIL_FILE_EXTENSIONS = [ '.jpg', '.jpeg', '.png' ];
 
-export {
+module.exports = {
   DEFAULT_HTTP_HEADERS,
+  EVENTS,
   LOG_LEVELS,
   MAX_THUMBNAIL_SIZE,
+  MAX_UPLOAD_COUNT,
   METHODS,
   RUNNER_ENVS,
   TOP_LEVEL_METADATA_FIELDS,

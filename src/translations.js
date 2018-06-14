@@ -1,8 +1,10 @@
-export default {
-  en: {
-    SPEFileDrop: {
-      Incoming: {
-        headingText: 'INCOMING!'
+module.exports = {
+  default: {
+    en: {
+      SPEFileDrop: {
+        Incoming: {
+          headingText: 'INCOMING!'
+        }
       }
     }
   }

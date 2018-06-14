@@ -1,4 +1,4 @@
-import { RestAction } from './rest_action';
+const { RestAction } = require('./rest_action');
 
 class IngestBatchClient {
   static completeUpload(ingestBatchId) {
@@ -18,4 +18,4 @@ class IngestBatchClient {
   }
 }
 
-export { IngestBatchClient };
+module.exports = { IngestBatchClient };

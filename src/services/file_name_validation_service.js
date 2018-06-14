@@ -1,5 +1,5 @@
-import { UNSUPPORTED_FILE_EXTENSIONS } from '../constants';
-import { FileValidationService } from 'Services/file_validation_service';
+const { UNSUPPORTED_FILE_EXTENSIONS } = require('../constants');
+const { FileValidationService } = require('./file_validation_service');
 
 class FileNameValidationService {
   static containsValidCharacters(fileName) {
@@ -25,4 +25,4 @@ class FileNameValidationService {
   }
 }
 
-export { FileNameValidationService };
+module.exports = { FileNameValidationService };

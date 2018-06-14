@@ -1,7 +1,7 @@
-import { DEFAULT_HTTP_HEADERS } from '../constants';
-import { Config } from '../config';
-import { Authentication } from '../config/authentication';
-import axios from 'axios';
+const { DEFAULT_HTTP_HEADERS } = require('../constants');
+const { Config } = require('../config');
+const { Authentication } = require('../config/authentication');
+const axios = require('axios');
 
 class RestAction {
   static get(endpoint, config) {
@@ -27,4 +27,4 @@ class RestAction {
   }
 }
 
-export { RestAction };
+module.exports = { RestAction };

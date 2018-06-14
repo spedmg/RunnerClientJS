@@ -1,5 +1,5 @@
-import values from 'lodash/values';
-import { METHODS } from '../constants';
+const values = require('lodash/values');
+const { METHODS } = require('../constants');
 
 class Authentication {
   static set method(authMethod) {
@@ -38,4 +38,4 @@ class Authentication {
   }
 }
 
-export { Authentication };
+module.exports = { Authentication };

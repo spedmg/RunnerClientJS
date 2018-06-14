@@ -1,6 +1,6 @@
-import I18n from 'i18n-js';
-import { Config } from '../config';
-import translations from '../translations.js';
+const I18n = require('i18n-js');
+const { Config } = require('../config');
+const translations = require('../translations.js').default;
 
 class TranslationService {
   static translate(...args) {
@@ -17,4 +17,4 @@ class TranslationService {
   }
 }
 
-export { TranslationService };
+module.exports = { TranslationService };

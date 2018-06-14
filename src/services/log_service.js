@@ -1,5 +1,5 @@
 /* eslint no-console: "off" */
-import { Config } from '../config';
+const { Config } = require('../config');
 
 class LogService {
   static info(...args) {
@@ -21,4 +21,4 @@ class LogService {
   }
 }
 
-export { LogService };
+module.exports = { LogService };

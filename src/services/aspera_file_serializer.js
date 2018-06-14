@@ -1,0 +1,26 @@
+class AsperaFileSerializer {
+  static serialize(result) {
+    let files = result.files ? result.files.dataTransfer.files : result.dataTransfer.files;
+
+    return files.map(function (file) {
+      let attrs = {
+        name: file.name,
+        size: file.size,
+        isFolder: file.type.indexOf('directory') !== -1,
+        doesNotRequireExtension: true,
+      };
+
+      if (attrs.isFolder && result.dragDropManifestGrouping) {
+        attrs.fetchFolderContentsFromDragDropEvent = function () {
+          let fileNameComponents = file.name.split(/\/|\\/);
+          let fileName = fileNameComponents[fileNameComponents.length - 1];
+          return result.dragDropManifestGrouping[fileName];
+        };
+      }
+
+      return attrs;
+    });
+  }
+}
+
+module.exports = { AsperaFileSerializer };

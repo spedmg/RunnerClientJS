@@ -1,4 +1,4 @@
-import { TranslationService } from 'Services/translation_service';
+const { TranslationService } = require('Services/translation_service');
 const ELEMENT_NAME = 'spe-file-drop--incoming';
 const TRANSLATION_SCOPE = { scope: 'SPEFileDrop.Incoming' };
 const t = (key) => {
@@ -20,12 +20,9 @@ tmpl.innerHTML = `
   <h1>${t('headingText')}</h1>
 `;
 
-try {
-  const ShadyCSS = require('shadycss');
-  if (ShadyCSS) {
-    ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
-  }
-} catch (e) { /* do nothing */ }
+if (window.ShadyCSS) {
+  window.ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
+}
 
 class SPEFileDrop__Incoming extends HTMLElement {
   static get elName() { return ELEMENT_NAME; }
@@ -49,4 +46,4 @@ class SPEFileDrop__Incoming extends HTMLElement {
 
 SPEFileDrop__Incoming.register();
 
-export { SPEFileDrop__Incoming };
+module.exports = { SPEFileDrop__Incoming };

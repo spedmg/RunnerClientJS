@@ -1,8 +1,8 @@
-import { RunnerClient } from '../src/index';
-import { METHODS, RUNNER_ENVS } from '../src/constants';
-import { Config } from '../src/config';
-import { Authentication } from '../src/config/authentication';
-import packageInfo from '../package.json';
+const { RunnerClient } = require('../src/index');
+const { METHODS, RUNNER_ENVS } = require('../src/constants');
+const { Config } = require('../src/config');
+const { Authentication } = require('../src/config/authentication');
+const packageInfo = require('../package.json');
 
 const VERSION = packageInfo.version;
 

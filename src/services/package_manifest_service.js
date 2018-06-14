@@ -1,4 +1,4 @@
-import { FileNameValidationService } from 'Services/file_name_validation_service';
+const { FileNameValidationService } = require('./file_name_validation_service');
 
 class PackageManifestService {
   static manifestForAsperaTransferEventData(asperaTransferEventData, packageTransferSpecs) {
@@ -136,4 +136,4 @@ class PackageManifestService {
   }
 }
 
-export { PackageManifestService };
+module.exports = { PackageManifestService };
