@@ -39,6 +39,7 @@
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "axios": "^0.18.0",
     "i18n-js": "^3.0.8",
-    "lodash": "^4.17.10"
+    "lodash": "^4.17.10",
+    "uuid": "^3.2.1"
   }
 }

@@ -56,8 +56,7 @@ class AsperaConnectService {
         if (result.error) {
           reject(result.error);
         } else {
-          let token = transferSpec.token;
-          tokens.push(token);
+          tokens.push(result.request_id);
           // activityUploadService.addToCache(token);
         }
       });
@@ -103,35 +102,33 @@ class AsperaConnectService {
     // TODO: register token to activityUploadService
     console.log('Recieved transfer event...', eventData);
 
-    if (eventData.result_count > 0) {
-      eventData.transfers.forEach((transfer) => {
-        if (transfer.transfer_spec) {
-          this._executeEventListenersFor('transfer', transfer);
-          // announcerService.asperaConnectTransferEventReceived(transfer);
+    eventData.transfers.forEach((transfer) => {
+      if (transfer.transfer_spec) {
+        this._executeEventListenersFor('transfer', transfer);
+        // announcerService.asperaConnectTransferEventReceived(transfer);
 
-          let data = this._getTransferDataFor(transfer);
-          if (data) {
-            if (transfer.percentage === 1) {
-              // activityUploadService.removeFromCache(data.token);
-              let tokens = this.activeTransfers[data.id];
-              tokens.splice(data.index, 1);
+        let data = this._getTransferDataFor(transfer);
+        if (data) {
+          if (transfer.percentage === 1) {
+            // activityUploadService.removeFromCache(data.token);
+            let tokens = this.activeTransfers[data.id];
+            tokens.splice(data.index, 1);
 
-              if (tokens.length === 0) {
-                delete(this.activeTransfers[data.id]);
-              }
-
-              this._executeEventListenersFor('transferComplete', {
-                transfer: transfer,
-                id: data.id,
-                token: data.token,
-                isBatchComplete: !tokens.length
-              });
-              // announcerService.asperaConnectTransferComplete({ transfer: transfer, id: data.id, isBatchComplete: !tokens.length });
+            if (tokens.length === 0) {
+              delete(this.activeTransfers[data.id]);
             }
+
+            this._executeEventListenersFor('transferComplete', {
+              transfer: transfer,
+              id: data.id,
+              token: data.token,
+              isBatchComplete: !tokens.length
+            });
+            // announcerService.asperaConnectTransferComplete({ transfer: transfer, id: data.id, isBatchComplete: !tokens.length });
           }
         }
-      });
-    }
+      }
+    });
 
     if (!this.hasActiveTransfers) { this._removeTransferListener(); }
   }
@@ -146,7 +143,7 @@ class AsperaConnectService {
 
       let tokens = this.activeTransfers[id];
       if (tokens) {
-        let token = transfer.transfer_spec.token;
+        let token = transfer.aspera_connect_settings.request_id;
         let index = tokens.indexOf(token);
         if (index !== -1) { return { id: id, token: token, index: index }; }
       }

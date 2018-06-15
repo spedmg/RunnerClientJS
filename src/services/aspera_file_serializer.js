@@ -6,7 +6,7 @@ class AsperaFileSerializer {
       let attrs = {
         name: file.name,
         size: file.size,
-        isFolder: file.type.indexOf('directory') !== -1,
+        isFolder: /directory/i.test(file.type),
         doesNotRequireExtension: true,
       };
 

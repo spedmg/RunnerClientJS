@@ -18,7 +18,7 @@ class AsperaUploadService {
   static get asperaConnectService() {
     if (!this._asperaConnectService) {
       AsperaConnectService.eventCallbacks = {
-        transferComplete: [this._onTransferComplete]
+        transferComplete: [this._onTransferComplete.bind(this)]
       };
       this._asperaConnectService = AsperaConnectService;
     }
@@ -75,6 +75,7 @@ class AsperaUploadService {
    * @param {boolean} data.isBatchComplete
    */
   static _onTransferComplete(data) {
+    console.log(data);
     let activeUpload = this.activeUploads[data.id];
     if (!activeUpload || !data.isBatchComplete) { return; }
 

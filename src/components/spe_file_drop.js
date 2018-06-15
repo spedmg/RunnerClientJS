@@ -2,32 +2,15 @@ require('./spe_file_drop/__incoming');
 const { EVENTS } = require('../constants');
 const { AsperaDragDropService } = require('../services/aspera_drag_drop_service');
 const { AsperaFileSerializer } = require('../services/aspera_file_serializer');
+const { AsperaUploadService } = require('../services/aspera_upload_service');
 const { FileUploadService } = require('../services/file_upload_service');
-
+const template = require('./spe_file_drop/template');
 const ELEMENT_NAME = 'spe-file-drop';
-const tmpl = document.createElement('template');
-tmpl.innerHTML = `
-  <style>
-    :host {
-      display: block;
-      position: relative;
-      border: 1px solid #999;
-      height: 500px;
-      width: 500px;
-      background: #ccc;
-    }
 
-    :host[incoming] spe-file-drop--incoming {
-      display: flex;
-      z-index: 10;
-    }
-  </style>
-  Hello from spe-file-drop!
-  <spe-file-drop--incoming></spe-file-drop--incoming>
-`;
-
+// ShadyCSS polyfills scoped styles in browsers that don't support this
+// ShadowDOM feature.
 if (window.ShadyCSS) {
-  window.ShadyCSS.prepareTemplate(tmpl, ELEMENT_NAME);
+  window.ShadyCSS.prepareTemplate(template, ELEMENT_NAME);
 }
 
 class SPEFileDrop extends HTMLElement {
@@ -43,8 +26,9 @@ class SPEFileDrop extends HTMLElement {
    */
   constructor() {
     super();
+    this.empty = true;
     let shadowRoot = this.attachShadow({mode: 'open'});
-    shadowRoot.appendChild(tmpl.content.cloneNode(true));
+    shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   /**
@@ -53,6 +37,10 @@ class SPEFileDrop extends HTMLElement {
    * try to delay work until this time.
    */
   connectedCallback() {
+    let uploadButton = this.shadowRoot.getElementById('upload-button');
+    if (uploadButton) {
+      uploadButton.addEventListener('click', this.initiateUpload.bind(this));
+    } else { console.log('no upload button'); }
     AsperaDragDropService.addTarget(this, {
       dragEnter: [
         () => { this.incoming = true; }
@@ -69,7 +57,7 @@ class SPEFileDrop extends HTMLElement {
           ).then(
             (data) => { this._emitAddedFilesEvent(true, data); },
             (error) => { this._emitAddedFilesEvent(false, error); },
-          );
+          ).finally(this._updateChildren);
         }
       ]
     });
@@ -99,7 +87,19 @@ class SPEFileDrop extends HTMLElement {
    * change to attributes listed in the observedAttributes array.
    */
   static get observedAttributes() {
-    return ['incoming'];
+    return ['empty', 'incoming', 'uploading'];
+  }
+
+  get empty() {
+    return this.hasAttribute('empty');
+  }
+
+  set empty(val) {
+    if (val) {
+      this.setAttribute('empty', '');
+    } else {
+      this.removeAttribute('empty');
+    }
   }
 
   get incoming() {
@@ -114,12 +114,31 @@ class SPEFileDrop extends HTMLElement {
     }
   }
 
+  get uploading() {
+    return this.hasAttribute('uploading');
+  }
+
+  set uploading(val) {
+    if (val) {
+      this.setAttribute('uploading', '');
+    } else {
+      this.removeAttribute('uploading');
+    }
+  }
+
   get files() {
     if (!this._files) {
-      this.__files = [];
-      this._files = new Proxy(this.__files, this._fileChangeHandler);
+      this._files = new Proxy([], this._fileChangeHandler);
     }
     return this._files;
+  }
+
+  initiateUpload() {
+    this.uploading = true;
+    AsperaUploadService.upload(this.files, { folderIds: [21] }).then(
+      (success) => { console.log(success); },
+      (err) => { console.warn(err); }
+    );
   }
 
   _emitAddedFilesEvent(success, data) {
@@ -133,18 +152,21 @@ class SPEFileDrop extends HTMLElement {
 
   get _fileChangeHandler() {
     let _this = this;
+    let filesList = this.shadowRoot.getElementById('files-list');
     return {
       set(files, prop, value) {
-        console.log('prop', prop);
-        console.log('value', value);
-        console.log(_this);
         if (prop.match(/^\d+$/)) {
-          let file = document.createElement('p');
-          file.innerText = JSON.stringify(value.fileName);
-          console.log(file);
-          _this.shadowRoot.appendChild(file);
+          if (!filesList.children.map(li => li.dataset.uuid).includes(value.uuid)) {
+            let file = document.createElement('li');
+            file.innerText = value.fileName;
+            file.dataset.uuid = value.uuid;
+            file.dataset.fullFilePath = value.fullFilePath;
+            filesList.prepend(file);
+          }
         }
-        return Reflect.set(...arguments);
+        let result = Reflect.set(...arguments);
+        _this.empty = !files.length;
+        return result;
       }
     };
   }

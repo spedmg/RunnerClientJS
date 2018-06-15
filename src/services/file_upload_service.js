@@ -24,6 +24,7 @@ class FileUploadService {
         currentFiles.unshift(file);
       }
 
+      resolve({ files: currentFiles, filesAdded: fileList.length });
       // announcerService.fileUploadServiceFileAdded({currentFiles: currentFiles, fileWasAdded: fileList.length});
       //
       // if (currentStateService.includesUploadState()) {

@@ -1,6 +1,6 @@
 const DEFAULT_HTTP_HEADERS = {
   'Accept': 'application/json',
-  'X-Requested-With': 'RunnerClient'
+  // 'X-Requested-With': 'RunnerClient'
 };
 
 const EVENTS = {

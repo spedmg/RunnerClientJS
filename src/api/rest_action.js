@@ -14,6 +14,20 @@ class RestAction {
 
   static post(endpoint, data) {
     return this.http.post(endpoint, data);
+    // return fetch(Config.baseURI + endpoint, {
+    //   method: 'POST',
+    //   body: JSON.stringify(data),
+    //   credentials: 'same-origin',
+    //   mode: 'cors',
+    //   headers: new Headers([
+    //     [ 'Content-Type', 'application/json' ],
+    //     [ 'Accept', 'application/json' ],
+    //     [ 'Authorization', `Bearer ${Authentication.token}` ]
+    //   ])
+    // }).then(
+    //   response => { return response.json(); },
+    //   error => { console.warn(error); }
+    // );
   }
 
   static get http() {
