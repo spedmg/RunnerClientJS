@@ -69,6 +69,12 @@ class AsperaConnectService {
     return { id: this.uploadBatchCount, promise: Promise.all(allPromises) };
   }
 
+  static showFileUploadDialog(successCallback) {
+    this.connect.showSelectFileDialog({
+      success: successCallback
+    });
+  }
+
   static _handleAsperaEvent(eventName, eventData) {
     if (eventName === AW4.Connect.EVENT.STATUS)   { this._handleAsperaStatusEvent(eventData); }
     if (eventName === AW4.Connect.EVENT.TRANSFER) { this._handleAsperaTransferEvent(eventData); }

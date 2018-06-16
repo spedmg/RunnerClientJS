@@ -15,7 +15,9 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    index: 'dist/index.html'
+    index: 'dist/index.html',
+    host: '0.0.0.0',
+    useLocalIp: true
   },
   resolve: {
     alias: {

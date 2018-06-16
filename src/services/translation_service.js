@@ -1,6 +1,6 @@
 const I18n = require('i18n-js');
 const { Config } = require('../config');
-const translations = require('../translations.js').default;
+const translations = require('../translations.js');
 
 class TranslationService {
   static translate(...args) {

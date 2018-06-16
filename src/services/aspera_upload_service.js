@@ -71,11 +71,10 @@ class AsperaUploadService {
    * @param {object}  data.transfer - transfer data from AW4.Connect
    * @param {number}  data.id - internal tracking ID for transfer batch. NOT the
    *                            runner ingest batch ID
-   * @param {string}  data.token - aspera transfer token
+   * @param {string}  data.token - aspera request_id
    * @param {boolean} data.isBatchComplete
    */
   static _onTransferComplete(data) {
-    console.log(data);
     let activeUpload = this.activeUploads[data.id];
     if (!activeUpload || !data.isBatchComplete) { return; }
 

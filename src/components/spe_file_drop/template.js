@@ -30,6 +30,9 @@ template.innerHTML = `
       display: none;
     }
 
+    :host[empty] #upload-button {
+      display: none;
+    }
     :host[empty] #empty-dropzone {
       display: flex;
     }
@@ -52,6 +55,34 @@ template.innerHTML = `
       z-index: 10;
     }
 
+    #error,
+    #uploading,
+    #upload-complete {
+      display: none;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    :host[error] #error {
+      display: flex;
+    }
+
+    :host[uploading] #uploading {
+      display: flex;
+    }
+    :host[uploading] #upload-button,
+    :host[uploading] #add-files-button {
+      display: none;
+    }
+
+    :host[upload-complete] #upload-complete {
+      display: flex;
+    }
+    :host[upload-complete] #upload-button,
+    :host[upload-complete] #add-files-button {
+      display: none;
+    }
+
     footer {
       background: rgba(0, 0, 0, 0.1);
       position: absolute;
@@ -61,21 +92,54 @@ template.innerHTML = `
       display: flex;
       justify-content: flex-end;
     }
+
+    footer span {
+      flex: 1;
+    }
   </style>
 
   <div id="empty-dropzone">
-    <spe-file-drop--icon icon="upload" big></spe-file-drop--icon>
-    <h1>${t('emptyHeadingText')}</h1>
-    <h2>${t('emptySubheadingText')}</h2>
-  </div>
-  <div id="incoming">
-    <h1>${t('incoming')}</h1>
+    <slot name="emptyDropzone">
+      <h1>${t('emptyHeadingText')}</h1>
+      <h2>${t('emptySubheadingText')}</h2>
+    </slot>
   </div>
 
-  <ul id="files-list"></ul>
+  <div id="incoming">
+    <slot name="incoming">
+      <h1>${t('incoming')}</h1>
+    </slot>
+  </div>
+
+  <div id="files-list"></div>
 
   <footer>
-    <button type="button" id="upload-button">${t('upload')}</button>
+    <div id="error">
+      <slot name="error">
+        <span>${t('error')}</span>
+      </slot>
+    </div>
+
+    <div id="uploading">
+      <slot name="uploading">
+        <span>${t('uploading')}</span>
+      </slot>
+    </div>
+
+    <div id="upload-complete">
+      <slot name="uploadComplete">
+        <span>${t('uploadComplete')}</span>
+        <button type="button" id="add-more-button">${t('uploadMore')}</button>
+      </slot>
+    </div>
+
+    <slot name="addFilesButton">
+      <button type="button" id="add-files-button">${t('addFiles')}</button>
+    </slot>
+
+    <slot name="uploadButton">
+      <button type="button" id="upload-button">${t('upload')}</button>
+    </slot>
   </footer>
 `;
 

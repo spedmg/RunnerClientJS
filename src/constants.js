@@ -5,6 +5,8 @@ const DEFAULT_HTTP_HEADERS = {
 
 const EVENTS = {
   FILES_ADDED: 'spe-files-added',
+  FILES_REMOVED: 'spe-files-removed',
+  REMOVE_FILE: 'spe-remove-file'
 };
 
 const LOG_LEVELS = {

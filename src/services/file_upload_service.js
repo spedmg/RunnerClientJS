@@ -4,7 +4,6 @@ const { MAX_UPLOAD_COUNT } = require('../constants');
 class FileUploadService {
   static addFiles(currentFiles, fileList) {
     return new Promise((resolve, reject) => {
-      // TODO: return Promise... resolve if all added, reject if too many
       fileList = this.removeDuplicates(currentFiles, fileList);
 
       if ((currentFiles.length + fileList.length) > MAX_UPLOAD_COUNT) {
@@ -12,17 +11,8 @@ class FileUploadService {
           error: `[RunnerClient] Too many files added. Uploads can have a maximum of ${MAX_UPLOAD_COUNT} files.`
         });
       }
-      for (let i = 0, length = fileList.length; i < length; i++) {
-        // if (currentFiles.length >= config.aspera.limit) {
-        //   announcerService.fileUploadLengthInvalid({numCurrentFiles: currentFiles.length});
-        //
-        //   break;
-        // }
-        //
-        let file = new FileFactory(fileList[i]);
 
-        currentFiles.unshift(file);
-      }
+      currentFiles.push(...fileList);
 
       resolve({ files: currentFiles, filesAdded: fileList.length });
       // announcerService.fileUploadServiceFileAdded({currentFiles: currentFiles, fileWasAdded: fileList.length});
@@ -65,12 +55,24 @@ class FileUploadService {
     let uniqueFileList = [];
 
     newFileList.forEach(function (file) {
-      if (existingFileNames.indexOf(file.name) === -1) {
-        uniqueFileList.push(file);
+      if (!existingFileNames.includes(file.name)) {
+        let ffile = new FileFactory(file);
+        uniqueFileList.push(ffile);
       }
     });
 
     return uniqueFileList;
+  }
+
+  static removeFileByUUID(files, uuid) {
+    return new Promise((resolve, reject) => {
+      let fileIdx = files.findIndex(file => { file.uuid === uuid; });
+      if (fileIdx) {
+        resolve(files.splice(fileIdx, 1));
+      } else {
+        reject();
+      }
+    });
   }
 
   static removeFile(files, file) {
