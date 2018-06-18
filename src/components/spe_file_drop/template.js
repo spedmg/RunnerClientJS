@@ -37,7 +37,12 @@ template.innerHTML = `
       display: flex;
     }
 
-    #empty-dropzone {
+    :host #files-list {
+      height: 100%;
+      overflow: scroll;
+    }
+
+    :host #empty-dropzone {
       display: none;
       height: 100%;
       justify-content: center;
@@ -45,7 +50,7 @@ template.innerHTML = `
       flex-direction: column;
     }
 
-    #incoming {
+    :host #incoming {
       align-items: center;
       display: none;
       height: 100%;
@@ -55,9 +60,9 @@ template.innerHTML = `
       z-index: 10;
     }
 
-    #error,
-    #uploading,
-    #upload-complete {
+    :host #error,
+    :host #uploading,
+    :host #upload-complete {
       display: none;
       flex: 1;
       justify-content: space-between;
@@ -83,7 +88,7 @@ template.innerHTML = `
       display: none;
     }
 
-    footer {
+    :host footer {
       background: rgba(0, 0, 0, 0.1);
       position: absolute;
       width: 100%;
@@ -93,7 +98,7 @@ template.innerHTML = `
       justify-content: flex-end;
     }
 
-    footer span {
+    :host footer span {
       flex: 1;
     }
   </style>

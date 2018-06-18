@@ -1,10 +1,14 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    main: './src/index.js',
+    components: './src/components.js',
+    polyfill: './src/polyfill.js'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'runner_client.js',
+    filename: 'runner_client.[name].js',
     library: 'RunnerClient',
     libraryExport: 'default'
   },
@@ -15,9 +19,7 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    index: 'dist/index.html',
-    host: '0.0.0.0',
-    useLocalIp: true
+    index: 'dist/index.html'
   },
   resolve: {
     alias: {

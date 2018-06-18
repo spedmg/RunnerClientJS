@@ -6,20 +6,41 @@
 <script src="//d3gcli72yxqn2z.cloudfront.net/connect/v4/asperaweb-4.min.js"></script>
 
 <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-<script src="runner_client.js"></script>
-<script>
-  RunnerClient.configure({
-    authentication: {
-      method: RunnerClient.METHODS.TOKEN,
-      token: 'a464216e37b85450160c21523b968a5f2858e29476eb1dbe81008c7507d7ea72'
-    },
-    environment: RunnerClient.RUNNER_ENVS.DEVELOPMENT
-  });
-</script>
 <script type="module">
-  WebComponents.waitFor(() => {
-    return RunnerClient.importComponents();
-  });
+  (function () {
+    var loadScript = function(src) {
+      return new Promise(function(resolve) {
+        var script = document.createElement('script');
+        script.onload = resolve;
+        script.src = src;
+        document.head.appendChild(script);
+      });
+    };
+    WebComponents.waitFor(function() {
+      var promises = [];
+      if (!window.Proxy ||
+          !window.Array.prototype.includes ||
+          !window.Reflect) {
+        promises.push(loadScript('runner_client.polyfill.js'));
+      }
+
+      Promise.all(promises).then(function () {
+        return loadScript('runner_client.main.js');
+      }).then(function () {
+        return Promise.resolve(
+          RunnerClient.configure({
+            authentication: {
+              method: RunnerClient.METHODS.TOKEN,
+              token: 'b45f457497dbd46e99ec8602d4d551a98551204d71bf75ca704e07cea30e970b'
+            },
+            environment: RunnerClient.RUNNER_ENVS.DEVELOPMENT
+          })
+        );
+
+        // return RunnerClient.importComponents();
+      }).then(loadScript('runner_client.components.js'));
+    });
+  })();
 </script>
 
 <style>

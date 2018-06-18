@@ -135,6 +135,9 @@ class AsperaDragDropService {
       return collection;
     };
 
+    // IE & Safari don't support the `items` property
+    if (!evt.dataTransfer.items) { return grouping; }
+
     for (let i = 0; i < evt.dataTransfer.items.length; i++) {
       let item = evt.dataTransfer.items[i];
       let fsEntry = item.webkitGetAsEntry();

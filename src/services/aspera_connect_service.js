@@ -57,7 +57,6 @@ class AsperaConnectService {
           reject(result.error);
         } else {
           tokens.push(result.request_id);
-          // activityUploadService.addToCache(token);
         }
       });
       allPromises.push(promise);
@@ -105,18 +104,13 @@ class AsperaConnectService {
   }
 
   static _handleAsperaTransferEvent(eventData) {
-    // TODO: register token to activityUploadService
-    console.log('Recieved transfer event...', eventData);
-
     eventData.transfers.forEach((transfer) => {
       if (transfer.transfer_spec) {
         this._executeEventListenersFor('transfer', transfer);
-        // announcerService.asperaConnectTransferEventReceived(transfer);
 
         let data = this._getTransferDataFor(transfer);
         if (data) {
           if (transfer.percentage === 1) {
-            // activityUploadService.removeFromCache(data.token);
             let tokens = this.activeTransfers[data.id];
             tokens.splice(data.index, 1);
 
@@ -130,7 +124,6 @@ class AsperaConnectService {
               token: data.token,
               isBatchComplete: !tokens.length
             });
-            // announcerService.asperaConnectTransferComplete({ transfer: transfer, id: data.id, isBatchComplete: !tokens.length });
           }
         }
       }

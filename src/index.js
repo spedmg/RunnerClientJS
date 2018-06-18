@@ -17,10 +17,6 @@ class RunnerClient {
       if (token) { Config.Authentication.token = token; }
     }
   }
-
-  static importComponents() {
-    return import(/* webpackChunkName: 'components' */ './components');
-  }
 }
 
 Object.assign(RunnerClient, { API, METHODS, RUNNER_ENVS });

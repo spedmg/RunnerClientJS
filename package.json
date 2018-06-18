@@ -9,7 +9,7 @@
   "license": "All Rights Reserved.",
   "private": true,
   "scripts": {
-    "build": "webpack --mode=production",
+    "build": "webpack --mode=production --devtool sourcemap",
     "lint": "eslint src/ spec/",
     "start": "webpack-dev-server --open",
     "test": "karma start spec/support/karma.config.js"
@@ -38,8 +38,10 @@
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "axios": "^0.18.0",
+    "core-js": "^2.5.7",
     "i18n-js": "^3.0.8",
     "lodash": "^4.17.10",
+    "proxy-polyfill": "^0.3.0",
     "uuid": "^3.2.1"
   }
 }
