@@ -16,10 +16,12 @@ class RunnerClient {
       if (method) { Config.Authentication.method = method; }
       if (token) { Config.Authentication.token = token; }
     }
+    if (options.locale) { Config.locale = options.locale; }
+    if (options.logLevel) { Config.logLevel = options.logLevel; }
   }
 }
 
-Object.assign(RunnerClient, { API, METHODS, RUNNER_ENVS });
+Object.assign(RunnerClient, { Config, API, METHODS, RUNNER_ENVS });
 
 module.exports = {
   default: RunnerClient,

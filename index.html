@@ -24,19 +24,7 @@
         promises.push(loadScript('runner_client.polyfill.js'));
       }
 
-      Promise.all(promises).then(function () {
-        return loadScript('runner_client.main.js');
-      }).then(function () {
-        return Promise.resolve(
-          RunnerClient.configure({
-            authentication: {
-              method: RunnerClient.METHODS.TOKEN,
-              token: 'b45f457497dbd46e99ec8602d4d551a98551204d71bf75ca704e07cea30e970b'
-            },
-            environment: RunnerClient.RUNNER_ENVS.DEVELOPMENT
-          })
-        );
-      }).then(loadScript('runner_client.components.js'));
+      Promise.all(promises).then(loadScript('runner_client.components.js'));
     });
   })();
 </script>
@@ -52,5 +40,12 @@
 </style>
 <body>
   <p>This is an example usage of RunnerClient.js</p>
+  <runner-client-configuration
+    method="token"
+    token="be62353c6daf57e5e5bc54420603b569775b7dd86382e47b5ebb9d4b6d947802"
+    environment="development"
+    locale="en"
+    log-level="debug">
+  </runner-client-configuration>
   <spe-file-drop></spe-file-drop>
 </body>

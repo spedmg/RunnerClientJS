@@ -1,5 +1,6 @@
 require('core-js/fn/array/find-index');
 require('core-js/fn/array/includes');
+require('core-js/fn/reflect');
 
 // Element.prepend() polyfill for IE & Edge
 // Source: https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/prepend()/prepend().md

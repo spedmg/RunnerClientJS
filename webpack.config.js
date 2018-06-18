@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    main: './src/index.js',
+    api: './src/index.js',
     components: './src/components.js',
     polyfill: './src/polyfill.js'
   },
