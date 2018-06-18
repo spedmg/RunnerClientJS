@@ -133,7 +133,7 @@ class SPEFileDrop extends HTMLElement {
 
   get files() {
     if (!this._files) {
-      this._files = new Proxy([], this._fileChangeHandler);
+      this._files = [];
     }
     return this._files;
   }
@@ -200,6 +200,7 @@ class SPEFileDrop extends HTMLElement {
   }
 
   _emitFilesAddedEvent(success, data) {
+    this._fileChangeHandler();
     this.dispatchEvent(
       new CustomEvent(EVENTS.FILES_ADDED, {
         detail: Object.assign({ success }, data),
@@ -236,23 +237,17 @@ class SPEFileDrop extends HTMLElement {
   }
 
   get _fileChangeHandler() {
-    let _this = this;
-    return {
-      set(files, prop, value) {
-        if (prop.match(/^\d+$/)) {
-          if (!_this._filesList.children.map(li => li.dataset.uuid).includes(value.uuid)) {
-            let file = document.createElement('spe-file-drop--file');
-            file.innerHTML = `<span slot="fileName">${value.fileName}</span>`;
-            file.dataset.uuid = value.uuid;
-            file.dataset.tooltip = value.fullFilePath;
-            _this._filesList.prepend(file);
-          }
-        }
-        let result = Reflect.set(...arguments);
-        _this.empty = !files.length;
-        return result;
+    let renderedUUIDs = this._filesList.children.map(li => li.dataset.uuid);
+    this.files.forEach(file => {
+      if (!renderedUUIDs.includes(file.uuid)) {
+        let fileEl = document.createElement('spe-file-drop--file');
+        fileEl.innerHTML = `<span slot="fileName">${file.fileName}</span>`;
+        fileEl.dataset.uuid = file.uuid;
+        fileEl.dataset.tooltip = file.fullFilePath;
+        this._filesList.prepend(fileEl);
       }
-    };
+    });
+    this.empty = !this.files.length;
   }
 
   get _filesList() {
