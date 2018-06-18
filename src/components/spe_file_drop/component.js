@@ -80,7 +80,19 @@ class SPEFileDrop extends HTMLElement {
    * change to attributes listed in the observedAttributes array.
    */
   static get observedAttributes() {
-    return ['empty', 'incoming', 'uploading', 'uploadComplete'];
+    return ['error', 'empty', 'incoming', 'uploading', 'uploadComplete'];
+  }
+
+  get error() {
+    return this.hasAttribute('error');
+  }
+
+  set error(val) {
+    if (val) {
+      this.setAttribute('error', '');
+    } else {
+      this.removeAttribute('error');
+    }
   }
 
   get empty() {
@@ -147,6 +159,7 @@ class SPEFileDrop extends HTMLElement {
 
   initiateUpload() {
     if (this.uploading) { return; }
+    if (this.error) { this.error = false; }
 
     this.uploading = true;
     this._filesList.children.forEach(file => file.locked = true);
@@ -196,6 +209,7 @@ class SPEFileDrop extends HTMLElement {
   _handleUploadFailure() {
     this.uploading = false;
     this._filesList.children.forEach(file => file.locked = false);
+    this._connectDragDrop();
     this.error = true;
   }
 
