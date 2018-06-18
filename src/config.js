@@ -1,7 +1,7 @@
 const values = require('lodash/values');
 const { Authentication } = require('./config/authentication');
 const { METHODS, RUNNER_ENVS, LOG_LEVELS } = require('./constants');
-const translations = require('./translations').default;
+const translations = require('./translations');
 
 const DEFAULT_LOCALE = 'en';
 
