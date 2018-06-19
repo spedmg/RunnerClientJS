@@ -35,8 +35,7 @@ Packages for browser usage are in the `dist` directory.
 
 ## Configuration
 
-You'll need a token provided via the Compass API to make requests. Consult
-https://developers.sonypicturesrunner.com/#oauth2-password-grant to get this.
+You'll need a token provided via the Compass API to make requests. Consult the [Compass API docs](https://developers.sonypicturesrunner.com/#oauth2-password-grant) for more information.
 
 **Please ensure you're not exposing your Compass Username/Password in your
 application's frontend. This request should be made server-side and only the
@@ -57,7 +56,7 @@ RunnerClient.configure({
 In addition to the Javascript API, this package provides `runner_client.components.js`.
 See [index.html](index.html) for an example including polyfills and custom web components.
 
-### <runner-client-configuration>
+### `<runner-client-configuration>`
 ```html
 <!--
   The <runner-client-configuration> element is required when using other custom
@@ -83,7 +82,7 @@ See [index.html](index.html) for an example including polyfills and custom web c
 </runner-client-configuration>
 ```
 
-### <spe-file-drop>
+### `<spe-file-drop>`
 ```html
 <!--
   The <spe-file-drop> element creates an darg-drop area as well as "Add Files"
