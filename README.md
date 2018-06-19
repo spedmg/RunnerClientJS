@@ -11,27 +11,33 @@ Modules can be accessed directly from the package source. The main entrypoint is
 `runnerclient`, with submodules in the `src` directory.
 
 ```javascript
+// using ES7 imports:
 import RunnerClient from 'runnerclient';
+import { PackageManifestService } from 'runnerclient/src/services/package_manifest_service';
 
-RunnerClient.configure({
-  environment: RunnerClient.RUNNER_ENVS.PRODUCTION, // optional, defaults to production
-  authentication: {
-    method: RunnerClient.METHODS.TOKEN // required.
-    token: 'abc123' // required delegate token
-  }
-});
+// using require:
+const RunnerClient = require('runnerclient');
+const { PackageManifestService } = require('runnerclient/src/services/package_manifest_service');
 ```
 
 ## Browser Usage
 
+Packages for browser usage are in the `dist` directory.
+
 ```html
+<!-- Provides RunnerClient library including API methods + constants -->
 <script src="runner_client.api.js"></script>
+<script>
+  RunnerClient.configure(...args); // See below
+  RunnerClient.API.upload(...args);
+</script>
 ```
 
 ## Configuration
 
 You'll need a token provided via the Compass API to make requests. Consult
 https://developers.sonypicturesrunner.com/#oauth2-password-grant to get this.
+
 **Please ensure you're not exposing your Compass Username/Password in your
 application's frontend. This request should be made server-side and only the
 token should be provided to the frontend.**
@@ -149,3 +155,8 @@ JS Library testing: `npm run test`
 ## Building
 
 `npm run build` will output new files to the `dist` directory.
+
+## Development
+
+`npm run start` will run the webpack-dev-server and open the example file in
+your browser.
