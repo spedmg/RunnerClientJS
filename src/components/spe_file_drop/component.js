@@ -1,4 +1,4 @@
-require('./__file');
+require('./__file'); // <spe-file-drop__file> sub-component
 const { EVENTS } = require('../../constants');
 const { AsperaConnectService } = require('../../services/aspera_connect_service');
 const { AsperaDragDropService } = require('../../services/aspera_drag_drop_service');
@@ -80,7 +80,29 @@ class SPEFileDrop extends HTMLElement {
    * change to attributes listed in the observedAttributes array.
    */
   static get observedAttributes() {
-    return ['error', 'empty', 'incoming', 'uploading', 'uploadComplete'];
+    return [
+      'destinationFolder',
+      'empty',
+      'error',
+      'incoming',
+      'uploading',
+      'uploadComplete'
+    ];
+  }
+
+  get destinationFolder() {
+    return this.getAttribute('destination-folder');
+  }
+
+  set destinationFolder(val) {
+    if (!val) {
+      this.removeAttribute('destination-folder');
+    } else {
+      if (!/\d+/.test(val)) {
+        throw new Error(`[<${SPEFileDrop.elName}>] destination-folder must be an integer`);
+      }
+      this.setAttribute('destination-folder', val);
+    }
   }
 
   get error() {
@@ -105,6 +127,25 @@ class SPEFileDrop extends HTMLElement {
     } else {
       this.removeAttribute('empty');
     }
+  }
+
+  get folderIDs() {
+    if (!this._folderIDs) {
+      if (this.destinationFolder) {
+        this._folderIDs = [this.destinationFolder];
+      } else {
+        this._folderIDs = [];
+      }
+    }
+    return this._folderIDs;
+  }
+
+  set folderIDs(val) {
+    if (val.constructor.name !== 'Array' || !val.every(id => /\d+/.test(id))) {
+      throw new Error(`[<${SPEFileDrop.elName}>] folderIDs must be an Array of numbers`);
+    }
+    this.destinationFolder = undefined;
+    this._folderIDs = val;
   }
 
   get incoming() {
@@ -161,11 +202,17 @@ class SPEFileDrop extends HTMLElement {
     if (this.uploading) { return; }
     if (this.error) { this.error = false; }
 
+    this.dispatchEvent(new CustomEvent(EVENTS.UPLOAD_STARTED, {
+      bubbles: true,
+      detail: {
+        files: this.files,
+      }
+    }));
     this.uploading = true;
     this._filesList.children.forEach(file => file.locked = true);
     AsperaDragDropService.reset();
 
-    AsperaUploadService.upload(this.files, { folderIds: [21] }).then(
+    AsperaUploadService.upload(this.files, { folderIds: this.folderIDs }).then(
       this._listenForTransferComplete.bind(this),
       this._handleUploadFailure.bind(this)
     );
@@ -207,6 +254,12 @@ class SPEFileDrop extends HTMLElement {
   }
 
   _handleUploadFailure() {
+    this.dispatchEvent(new CustomEvent(EVENTS.UPLOAD_FAILED, {
+      bubbles: true,
+      detail: {
+        currentFiles: this.files,
+      }
+    }));
     this.uploading = false;
     this._filesList.children.forEach(file => file.locked = false);
     this._connectDragDrop();
@@ -246,6 +299,13 @@ class SPEFileDrop extends HTMLElement {
   }
 
   _uploadComplete() {
+    this.dispatchEvent(new CustomEvent(EVENTS.UPLOAD_COMPLETE, {
+      bubbles: true,
+      detail: {
+        currentFiles: this.files,
+      }
+    }));
+
     this.uploading = false;
     this.uploadComplete = true;
   }

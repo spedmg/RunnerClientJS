@@ -66,7 +66,10 @@ const AW4 = {
     this.showUpdate = function () {};
   },
   Utils: {
-    SESSION_ID: `Foobar${Math.floor(Math.random() * 10000)}`
+    SESSION_ID: `Foobar${Math.floor(Math.random() * 10000)}`,
+    BROWSER: {
+      EDGE: false
+    }
   }
 };
 
