@@ -1,10 +1,13 @@
-import { FileUploadService } from 'Services/file_upload_service';
+const FileUploadServiceInjector  = require('inject-loader!Services/file_upload_service');
+const FileUploadService = FileUploadServiceInjector({
+  '../constants': { MAX_UPLOAD_COUNT: 2 }
+}).FileUploadService;
 
-xdescribe('FileUploadService', function () {
+describe('FileUploadService', function () {
   let subject;
 
   beforeEach(function () {
-    subject = class extends FileUploadService {};
+    subject = FileUploadService;
 
     this.clearCurrentFiles = function () {
       let ctx = this;
@@ -53,7 +56,10 @@ xdescribe('FileUploadService', function () {
         let expected  = [{name: 'path/to/bar.txt'}];
         let actual    = subject.removeDuplicates(this.currentFiles, this.fileList);
 
-        expect(actual).toEqual(expected);
+        expect(actual.length).toEqual(expected.length);
+        expected.forEach((ex, idx) => {
+          expect(actual[idx].name).toEqual(expected.name);
+        });
       });
     });
   });
@@ -64,79 +70,68 @@ xdescribe('FileUploadService', function () {
     });
 
     describe('given files have been selected', function () {
-      describe('by default', function () {
-        beforeEach(function () {
-          spyOn(this.announcerService, 'fileUploadServiceFileAdded');
-
-          this.clearCurrentFiles();
-          subject.addFiles(this.currentFiles, this.fileList);
-        });
-
-        it('emits a file was added event', function () {
-          expect(this.announcerService.fileUploadServiceFileAdded).toHaveBeenCalledWith({
-            currentFiles: this.currentFiles,
-            fileWasAdded: this.fileList.length
-          });
-        });
-      });
-
       describe('given pre-existing files in the list', function () {
-        beforeEach(function () {
+        beforeEach(async function() {
           this.setCurrentFiles();
-          subject.addFiles(this.currentFiles, this.fileList);
+          await subject.addFiles(this.currentFiles, this.fileList);
         });
 
         it('adds the new files to the beginning of the array', function () {
           let expected  = ['path/to/bar.txt', 'path/to/foo.txt'];
           let actual    = this.currentFiles.map(function(file) { return file.fullFilePath; });
 
-          expect(actual).toEqual(expected);
+          expect(actual.length).toEqual(expected.length);
+          expected.forEach((ex, idx) => {
+            expect(actual[idx].name).toEqual(expected.name);
+          });
         });
 
         describe('given duplicate files', function () {
-          beforeEach(function () {
+          beforeEach(async function () {
             this.setCurrentFiles();
-            subject.addFiles(this.currentFiles, this.fileList);
+            await subject.addFiles(this.currentFiles, this.fileList);
           });
 
           it('does not add duplicate files to the array', function () {
             let expected  = ['path/to/bar.txt', 'path/to/foo.txt'];
             let actual    = this.currentFiles.map(function(file) { return file.fullFilePath; });
 
-            expect(actual).toEqual(expected);
+            expect(actual.length).toEqual(expected.length);
+            expected.forEach((ex, idx) => {
+              expect(actual[idx].name).toEqual(expected.name);
+            });
           });
         });
       });
 
       describe('given no pre-existing files in the list', function () {
-        beforeEach(function () {
+        beforeEach(async function () {
           this.clearCurrentFiles();
-          subject.addFiles(this.currentFiles, this.fileList);
+          await subject.addFiles(this.currentFiles, this.fileList);
         });
 
         it('adds the specified files', function () {
           let expected  = ['path/to/bar.txt', 'path/to/foo.txt'];
           let actual    = this.currentFiles.map(function(file) { return file.fullFilePath; });
 
-          expect(actual).toEqual(expected);
+          expect(actual.length).toEqual(expected.length);
+          expected.forEach((ex, idx) => {
+            expect(actual[idx].name).toEqual(expected.name);
+          });
         });
       });
 
       describe('given the total number of files is over our aspera limit', function() {
         beforeEach(function() {
-          spyOn(this.announcerService, 'fileUploadLengthInvalid');
-
           this.clearCurrentFiles();
           subject.addFiles(this.currentFiles, [{name: 'foo.txt'}, {name: 'bar.txt'}, {name: 'baz.txt'}]);
         });
 
-        it('emits a file upload length invalid event', function () {
-          expect(this.announcerService.fileUploadLengthInvalid).toHaveBeenCalled();
-        });
-
-        it('emits the length of the currentFiles array', function () {
-          expect(this.announcerService.fileUploadLengthInvalid)
-            .toHaveBeenCalledWith({numCurrentFiles: this.currentFiles.length});
+        specify(function (done) {
+          subject.addFiles(this.currentFiles, [{name: 'foo.txt'}, {name: 'bar.txt'}, {name: 'baz.txt'}]).catch((e) => {
+            expect(e.error).toMatch(/too many files/i);
+            done();
+          });
         });
       });
     });
@@ -147,16 +142,19 @@ xdescribe('FileUploadService', function () {
       });
 
       describe('given pre-existing files in the list', function () {
-        beforeEach(function () {
+        beforeEach(async function () {
           this.setCurrentFiles();
-          subject.addFiles(this.currentFiles, this.fileList);
+          await subject.addFiles(this.currentFiles, this.fileList);
         });
 
         it('does not change the list of current file names', function () {
           let expected  = ['foo.txt'];
           let actual    = this.currentFiles.map(function(file) { return file.fileName; });
 
-          expect(actual).toEqual(expected);
+          expect(actual.length).toEqual(expected.length);
+          expected.forEach((ex, idx) => {
+            expect(actual[idx].name).toEqual(expected.name);
+          });
         });
       });
 
@@ -172,61 +170,6 @@ xdescribe('FileUploadService', function () {
 
           expect(actual).toEqual(expected);
         });
-      });
-    });
-  });
-
-  describe('.removeFile', function () {
-    describe('given a file that exists', function () {
-      beforeEach(function () {
-        spyOn(this.announcerService, 'fileUploadServiceFileRemoved');
-
-        this.currentFiles = [
-          {
-            fileName: 'file_a.txt',
-            fullFilePath: 'path/to/file_a.txt',
-            valid: function() { return true; },
-          },
-          {
-            fileName: 'file_b.txt',
-            fullFilePath: 'path/to/file_b.txt',
-            valid: function() { return true; },
-          }
-        ];
-
-        subject.removeFile(this.currentFiles, { fullFilePath: 'path/to/file_b.txt'});
-      });
-
-      it('removes file from the file list', function () {
-        let expected  = ['path/to/file_a.txt'];
-        let actual    = this.currentFiles.map(function(file) { return file.fullFilePath; });
-
-        expect(actual).toEqual(expected);
-      });
-
-      it('emits a file was removed event', function () {
-        expect(this.announcerService.fileUploadServiceFileRemoved).toHaveBeenCalledWith({
-          currentFiles: this.currentFiles
-        });
-      });
-    });
-  });
-
-  describe('.validFileCount', function () {
-    describe('given one valid file out of three', function () {
-      beforeEach(function () {
-        let good  = function () { return true;  };
-        let bad   = function () { return false; };
-
-        this.files = [
-          { valid: good },
-          { valid: bad  },
-          { valid: bad  },
-        ];
-      });
-
-      it('returns a count of one', function () {
-        expect(subject.validFileCount(this.files)).toEqual(1);
       });
     });
   });

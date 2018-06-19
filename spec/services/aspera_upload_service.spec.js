@@ -77,7 +77,7 @@ describe('AsperaUploadService', () => {
         await subject.upload([ file ], { folderIds: [ 1 ] });
 
         expect(eventCallbackSpy).toHaveBeenCalledWith({
-          transferComplete: [subject._onTransferComplete]
+          transferComplete: [jasmine.any(Function)]
         });
 
         expect(RestAction.post).toHaveBeenCalledWith('/api/v1/uploads', {

@@ -44,8 +44,8 @@ describe('AsperaConnectService', () => {
   });
 
   describe('start()', () => {
-    let dummyTransferSpec1 = { token: 'quack' };
-    let dummyTransferSpec2 = { token: 'rich' };
+    let dummyTransferSpec1 = { request_id: 'quack' };
+    let dummyTransferSpec2 = { request_id: 'rich' };
     let dummyConnectionSettings = {};
 
     beforeEach(() => {
@@ -75,17 +75,23 @@ describe('AsperaConnectService', () => {
         eventCallbacks.transferComplete.push(transferCompleteCallback);
 
         td.when(
-          subject.connect.startTransfer(td.matchers.isA(Object), dummyConnectionSettings, td.matchers.isA(Object))
-        ).thenReturn({});
+          subject.connect.startTransfer(dummyTransferSpec1, dummyConnectionSettings, td.matchers.isA(Object))
+        ).thenReturn({ request_id: 'quackQuack' });
+        td.when(
+          subject.connect.startTransfer(dummyTransferSpec2, dummyConnectionSettings, td.matchers.isA(Object))
+        ).thenReturn({ request_id: 'richyRich' });
+
         subject.start([dummyTransferSpec1, dummyTransferSpec2], dummyConnectionSettings);
         eventData = {
           result_count: 123,
           transfers: [
             {
+              aspera_connect_settings: { request_id: 'quackQuack' },
               transfer_spec: { paths: [ { source: '/mcduck', destination: '/mcduck123' } ], token: 'quack' },
               percentage: 0,
             },
             {
+              aspera_connect_settings: { request_id: 'richyRich' },
               transfer_spec: { paths: [ { source: '/mcduck/luckydime.mov', destination: '/mcduck123/luckydime.mov' } ], token: 'rich' },
               percentage: 0,
             }
@@ -111,8 +117,8 @@ describe('AsperaConnectService', () => {
           triggerEventCallback('transfer', eventData);
 
           expect(transferCompleteCallback.calls.allArgs()).toEqual([
-            [{ transfer: eventData.transfers[0], id: '1', token: 'quack', isBatchComplete: false }],
-            [{ transfer: eventData.transfers[1], id: '1', token: 'rich',  isBatchComplete: true }]
+            [{ transfer: eventData.transfers[0], id: '1', token: 'quackQuack', isBatchComplete: false }],
+            [{ transfer: eventData.transfers[1], id: '1', token: 'richyRich',  isBatchComplete: true }]
           ]);
         });
       });
