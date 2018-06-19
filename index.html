@@ -5,9 +5,12 @@
 <script src="//d3gcli72yxqn2z.cloudfront.net/connect/v4/connectinstaller-4.min.js"></script>
 <script src="//d3gcli72yxqn2z.cloudfront.net/connect/v4/asperaweb-4.min.js"></script>
 
+<!-- Required polyfill for Custom Elements in all browsers other than Google Chrome. -->
 <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
 <script>
   (function () {
+    // Asynchronously load scripts
     var loadScript = function(src) {
       return new Promise(function(resolve) {
         var script = document.createElement('script');
@@ -16,15 +19,20 @@
         document.head.appendChild(script);
       });
     };
+
+    // Wait for the webcomponentsjs polyfill to be ready
     WebComponents.waitFor(function() {
       var promises = [];
+
+      // Fetch the additional polyfill package if there are missing features
       if (!window.Element.prototype.prepend ||
           !window.Array.prototype.includes ||
           !window.Array.prototype.findIndex) {
         promises.push(loadScript('runner_client.polyfill.js'));
       }
 
-      Promise.all(promises).then(loadScript('runner_client.components.js'));
+      // Finally, load the Custom Element definitions
+      return Promise.all(promises).then(loadScript('runner_client.components.js'));
     });
   })();
 </script>
@@ -38,15 +46,17 @@
     box-sizing: inherit;
   }
 </style>
+
 <body>
   <p>This is an example usage of RunnerClient.js</p>
+
   <runner-client-configuration
     method="token"
-    token="foo"
-    environment="development"
+    token="abc123"
+    environment="staging"
     locale="en"
     log-level="debug">
   </runner-client-configuration>
 
-  <spe-file-drop></spe-file-drop>
+  <spe-file-drop destination-folder="42"></spe-file-drop>
 </body>

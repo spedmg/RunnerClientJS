@@ -25,14 +25,17 @@ RunnerClient.configure({
 ## Browser Usage
 
 ```html
-<!-- Aspera AW4 required for using <spe-runner-uploader> -->
-<script src="//d3gcli72yxqn2z.cloudfront.net/connect/v4/connectinstaller-4.min.js"></script>
-<script src="//d3gcli72yxqn2z.cloudfront.net/connect/v4/asperaweb-4.min.js"></script>
-
 <script src="runner_client.api.js"></script>
 ```
 
 ## Configuration
+
+You'll need a token provided via the Compass API to make requests. Consult
+https://developers.sonypicturesrunner.com/#oauth2-password-grant to get this.
+**Please ensure you're not exposing your Compass Username/Password in your
+application's frontend. This request should be made server-side and only the
+token should be provided to the frontend.**
+
 ```javascript
 RunnerClient.configure({
   authentication: {
@@ -46,17 +49,18 @@ RunnerClient.configure({
 ## Web Components
 
 In addition to the Javascript API, this package provides `runner_client.components.js`.
-This provides the following v1 Custom Elements:
+See [index.html](index.html) for an example including polyfills and custom web components.
 
+### <runner-client-configuration>
 ```html
 <!--
   The <runner-client-configuration> element is required when using other custom
   RunnerClient.js elements. It provides configuration to interact with the
   Runner/Compass API.
 
-  Options:
-    token: This should be a delegate token provided to you by the Compass API.
-    method: The authentication method for API requests. Currently only "token" is supported.
+  Attributes:
+    token: Required. This should be a delegate token provided to you by the Compass API.
+    method: Required. The authentication method for API requests. Currently only "token" is supported.
     environment: Optional. The Compass environment to interact with. Should be one of
       "development", "integration", "staging", or "production". Defaults to "production"
     locale: Optional. This is an I18n key for text translations in the custom
@@ -71,14 +75,67 @@ This provides the following v1 Custom Elements:
   locale="en"
   log-level="warn">
 </runner-client-configuration>
+```
 
+### <spe-file-drop>
+```html
+<!--
+  The <spe-file-drop> element creates an darg-drop area as well as "Add Files"
+  and "Upload" buttons; everything needed for a basic upload of files or folders
+  to Runner.
+
+  NOTE: This element requires the presence of the asperaweb-4 and
+  connectinstaller-4 scripts, as demoed above.
+
+  Attributes:
+    destination-folder: The folder ID assets should be uploaded to. If multiple
+      are needed, use the `folderIDs` property instead of this attribute.
+
+  Properties:
+    files: An array of files to be uploaded.
+    folderIDs: An array of Compass Folder IDs that items are to be uploaded to.
+      Changing this property will unset the `destination-folder` attribute.
+
+  Events: 
+    RunnerClient.EVENTS.FILES_ADDED ('spe-files-added'): emitted when files
+      dropped on the element or added via the 'Add Files' button.
+      Attributes:
+        detail.success: Boolean. False indicates too many files were added.
+        detail.currentFiles: The current array of files (same as the `files` property above)
+        detail.filesAdded: The count of files added during this drop/add operation. 
+    RunnerClient.EVENTS.FILES_REMOVED ('spe-files-removed'): emitted when files
+      are removed from the files list
+      Attributes:
+        detail.currentFiles: The current array of files (same as the `files` property above)
+    RunnerClient.EVENTS.UPLOAD_STARTED ('spe-upload-started'): emitted when
+      "upload" button is clicked
+      Attributes:
+        detail.currentFiles: The current array of files (same as the `files` property above)
+    RunnerClient.EVENTS.UPLOAD_FAILED ('spe-upload-failed'): emitted when an
+      error occurs during upload
+      Attributes:
+        detail.currentFiles: The current array of files (same as the `files` property above)
+    RunnerClient.EVENTS.UPLOAD_COMPLETE ('spe-upload-complete'): emitted when
+      all Aspera transfers have completed.
+      Attributes:
+        detail.currentFiles: The current array of files (same as the `files` property above)
+-->
+
+<spe-file-drop destination-folder="42"></spe-file-drop>
 ```
 
 ### Dependencies
 
-The Aspera Connect client (3.7.4+) is required for the `<spe-file-drop>`
-component. For more information about the Connect client, see
-[here](https://developer.asperasoft.com/web/connect-client).
+- The Aspera Connect client (3.7.4+) is required for the `<spe-file-drop>`
+  component. For more information about the Connect client, see
+  [here](https://developer.asperasoft.com/web/connect-client).
+
+- The Custom Elements provided are not natively supported by all browsers, and
+  will need the `webcomponentsjs` polyfill to work properly.
+  See [here](https://github.com/WebComponents/webcomponentsjs) for instructions.
+
+- In addition to `webcomponentsjs`, an additional polyfill package is provided
+  for Internet Explorer & Safari. See example in [index.html](index.html) for usage.
 
 ## Development Dependencies
 
@@ -88,3 +145,7 @@ component. For more information about the Connect client, see
 ## Testing
 
 JS Library testing: `npm run test`
+
+## Building
+
+`npm run build` will output new files to the `dist` directory.
