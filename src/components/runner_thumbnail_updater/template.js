@@ -43,7 +43,7 @@ template.innerHTML = `
     }
 
     :host #preview img {
-      flex: 0;
+      flex: 0 1 auto;
     }
 
     :host #empty-dropzone {
