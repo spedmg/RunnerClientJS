@@ -14,6 +14,10 @@ class API {
   static bulkUpdateAssetItems(assetItems, options) {
     return AssetItemClient.bulkUpdate(assetItems, options);
   }
+
+  static replaceThumbnail(assetId, replacementThumbnailName) {
+    return AssetItemClient.replaceThumbnail(assetId, replacementThumbnailName);
+  }
 }
 
 module.exports = {

@@ -92,6 +92,10 @@ template.innerHTML = `
       display: none;
     }
 
+    :host #add-file-input {
+      display: none;
+    }
+
     :host footer {
       background: rgba(0, 0, 0, 0.1);
       width: 100%;
@@ -109,6 +113,7 @@ template.innerHTML = `
     <slot name="emptyDropzone">
       <h1>${t('emptyHeadingText')}</h1>
       <h2>${t('emptySubheadingText')}</h2>
+      <h3>${t('emptyAdditionalText')}</h3>
     </slot>
   </div>
 
@@ -141,6 +146,7 @@ template.innerHTML = `
 
     <slot name="addFileButton">
       <button type="button" id="add-file-button">${t('addFile')}</button>
+      <input type="file" id="add-file-input" />
     </slot>
 
     <slot name="uploadButton">

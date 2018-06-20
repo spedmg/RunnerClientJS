@@ -28,7 +28,7 @@ module.exports = {
       emptyHeadingText: 'DRAG AN IMAGE',
       emptySubheadingText: 'or use the <strong>ADD FILE</strong> button',
       emptyAdditionalText: 'JPEG or PNG (less than 20MB)<br>If necessary, image orientation will be adjusted after upload.',
-      error: 'An error occured. Please try again.',
+      error: 'An error occured during upload. Please try again.',
       fileReadFailed: 'Error: failed to read file.',
       incoming: 'INCOMING!',
       loading: 'Loading...',

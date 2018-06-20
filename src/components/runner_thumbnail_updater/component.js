@@ -1,5 +1,8 @@
 // Base element for <runner-uploader> and <runner-thumbnail-updater>
+const { API } = require('../../api');
 const { FileFactory } = require('../../services/file_factory');
+const { LogService } = require('../../services/log_service');
+const { ThumbnailReplacementService } = require('../../services/thumbnail_replacement_service');
 const { TranslationService } = require('../../services/translation_service');
 const TRANSLATION_SCOPE = { scope: 'RunnerThumbnailUpdater' };
 const { EVENTS } = require('../../constants');
@@ -130,6 +133,7 @@ class RunnerThumbnailUpdater extends HTMLElement {
   }
 
   _addEventListeners() {
+    // Drag-drop setup
     this._dragEnterListener = ((evt) => {
       evt.preventDefault();
       evt.stopPropagation();
@@ -155,9 +159,88 @@ class RunnerThumbnailUpdater extends HTMLElement {
     this.addEventListener('dragleave', this._dragLeaveListener);
     this.addEventListener('dragover', this._dragOverListener);
     this.addEventListener('drop', this._dropListener);
+
+    // "Upload" button setup
+    const uploadBtn = this.shadowRoot.getElementById('upload-button');
+    this._uploadClickListener = ((evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      this._beginUpload();
+    }).bind(this);
+    uploadBtn.addEventListener('click', this._uploadClickListener);
+
+    // "Add File" button
+    const addFileBtn = this.shadowRoot.getElementById('add-file-button');
+    this._addFilesClickListener = ((evt) => {
+      evt.stopPropagation();
+      evt.preventDefault();
+      this.shadowRoot.getElementById('add-file-input').click();
+    }).bind(this);
+    addFileBtn.addEventListener('click', this._addFilesClickListener);
+
+    // File added via input
+    const fileInput = this.shadowRoot.getElementById('add-file-input');
+    this._fileAddedListener = ((evt) => {
+      evt.stopPropagation();
+      evt.preventDefault();
+      this._handleFileAdded(evt);
+    }).bind(this);
+    fileInput.addEventListener('change', this._fileAddedListener);
+  }
+
+  _beginUpload() {
+    this.errors = false;
+    this.uploading = true;
+    let promises = this.assetItemIDs.map(assetItemID => {
+      return ThumbnailReplacementService.replaceThumbnailFor(assetItemID, this.file);
+    });
+    Promise.all(promises).then(
+      (results) => {
+        return API.bulkUpdateAssetItems(results);
+      }
+    ).then(
+      () => {
+        this.uploading = false;
+        this.uploadComplete = true;
+        this._emitUploadCompleteEvent();
+      }
+    ).catch(
+      (err) => {
+        this.uploading = false;
+        LogService.warn(`[${ELEMENT_NAME}] Failed to update thumbnail!`, err);
+        this._setErrorMessage('error');
+        this._emitUploadFailedEvent(err);
+      }
+    );
+  }
+
+  _emitUploadCompleteEvent() {
+    this.dispatchEvent(
+      new CustomEvent(EVENTS.UPLOAD_COMPLETE, {
+        bubbles: true,
+        detail: {
+          assetItemIDs: this.assetItemIDs,
+          filename: this.file.fileName
+        }
+      })
+    );
+  }
+
+  _emitUploadFailedEvent(error) {
+    this.dispatchEvent(
+      new CustomEvent(EVENTS.UPLOAD_FAILED, {
+        bubbles: true,
+        detail: {
+          assetItemIDs: this.assetItemIDs,
+          filename: this.file.fileName,
+          error: error
+        }
+      })
+    );
   }
 
   _handleDrop(event) {
+    LogService.debug(`[${ELEMENT_NAME}] Drop event recieved`, event);
     this.error = false;
     let files = event.dataTransfer.files;
     if (files.length > 1) {
@@ -171,7 +254,21 @@ class RunnerThumbnailUpdater extends HTMLElement {
       return;
     }
 
-    this._file = file;
+    this.file = file;
+    this._setPreview(file);
+  }
+
+  _handleFileAdded(event) {
+    LogService.debug(`[${ELEMENT_NAME}] File added via input`, event);
+    this.error = false;
+
+    let file = new FileFactory(event.target.files[0]);
+    if (!file.validThumbnail()) {
+      this._setErrorMessage('invalidFile');
+      return;
+    }
+
+    this.file = file;
     this._setPreview(file);
   }
 
@@ -194,18 +291,21 @@ class RunnerThumbnailUpdater extends HTMLElement {
 
     let reader = new FileReader();
     reader.onprogress = (evt) => {
+      LogService.debug(`[${ELEMENT_NAME}] FileReader progress`, evt);
       progressEl.max = evt.total;
       progressEl.value = evt.loaded;
     };
 
-    reader.onload = () => {
+    reader.onload = (evt) => {
+      LogService.debug(`[${ELEMENT_NAME}] FileReader loaded`, evt);
       progressEl.remove();
       let img = document.createElement('img');
       img.src = reader.result;
       previewContainer.appendChild(img);
     };
 
-    reader.onerror = () => {
+    reader.onerror = (evt) => {
+      LogService.warn(`[${ELEMENT_NAME}] FileReader load error`, evt);
       this.empty = true;
       this._setErrorMessage('fileReadFailed');
     };

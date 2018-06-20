@@ -7,6 +7,11 @@ class AssetItemClient {
 
     return RestAction.post('/api/v1/asset_items/bulk_update', body);
   }
+
+  static replaceThumbnail(assetId, replacementThumbnailName) {
+    let body = { filename: replacementThumbnailName };
+    return RestAction.post(`/api/v1/asset_items/${assetId}/delegate_token`, body);
+  }
 }
 
 module.exports = { AssetItemClient };

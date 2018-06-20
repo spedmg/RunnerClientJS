@@ -314,7 +314,7 @@ class RunnerUploader extends HTMLElement {
     let renderedUUIDs = this._filesList.children.map(li => li.dataset.uuid);
     this.files.forEach(file => {
       if (!renderedUUIDs.includes(file.uuid)) {
-        let fileEl = document.createElement(RunnerUploader__File.elName);
+        let fileEl = document.createElement('runner-uploader--file');
         fileEl.innerHTML = `<span slot="fileName">${file.fileName}</span>`;
         fileEl.dataset.uuid = file.uuid;
         fileEl.dataset.tooltip = file.fullFilePath;
