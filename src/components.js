@@ -1,2 +1,3 @@
 require('./components/runner_client_config/component');
-require('./components/spe_file_drop/component');
+require('./components/runner_uploader/component');
+require('./components/runner_thumbnail_updater/component');

@@ -1,7 +1,7 @@
-import { SPEFileDrop } from 'Components/spe_file_drop/component';
+import { RunnerUploader } from 'Components/runner_uploader/component';
 import { AsperaDragDropService } from 'Services/aspera_drag_drop_service';
 
-describe('<spe-file-drop>', () => {
+describe('<runner-uploader>', () => {
   let subject;
   let testContainer;
   let destinationFolder = '42';
@@ -14,11 +14,11 @@ describe('<spe-file-drop>', () => {
     spyOn(AsperaDragDropService, 'reset');
 
     testContainer.innerHTML = `
-      <${SPEFileDrop.elName} destination-folder="${destinationFolder}">
-      </${SPEFileDrop.elName}>
+      <${RunnerUploader.elName} destination-folder="${destinationFolder}">
+      </${RunnerUploader.elName}>
     `;
 
-    subject = testContainer.querySelector(SPEFileDrop.elName);
+    subject = testContainer.querySelector(RunnerUploader.elName);
   });
 
   afterEach(() => {

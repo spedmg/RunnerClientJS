@@ -1,5 +1,5 @@
 const { EVENTS } = require('../../constants');
-const ELEMENT_NAME = 'spe-file-drop--file';
+const ELEMENT_NAME = 'runner-uploader--file';
 const template = document.createElement('template');
 template.innerHTML = `
   <style>
@@ -79,7 +79,7 @@ if (window.ShadyCSS) {
   window.ShadyCSS.prepareTemplate(template, ELEMENT_NAME);
 }
 
-class SPEFileDrop__File extends HTMLElement {
+class RunnerUploader__File extends HTMLElement {
   static get elName() { return ELEMENT_NAME; }
 
   constructor() {
@@ -127,4 +127,4 @@ class SPEFileDrop__File extends HTMLElement {
   }
 }
 
-SPEFileDrop__File.register();
+RunnerUploader__File.register();

@@ -1,8 +1,5 @@
 const { TranslationService } = require('../../services/translation_service');
-
-const isEdge = window.AW4.Utils.BROWSER.EDGE;
-const TRANSLATION_SCOPE = { scope: isEdge ? 'SPEFileDrop.edge' : 'SPEFileDrop' };
-
+const TRANSLATION_SCOPE = { scope: 'RunnerThumbnailUpdater' };
 const t = (key) => {
   return TranslationService.translate(key, TRANSLATION_SCOPE);
 };
@@ -11,7 +8,8 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-      display: block;
+      display: flex;
+      flex-direction: column;
       position: relative;
       border: 1px solid #999;
       height: 500px;
@@ -37,9 +35,15 @@ template.innerHTML = `
       display: flex;
     }
 
-    :host #files-list {
+    :host #preview {
       height: 100%;
-      overflow: scroll;
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+
+    :host #preview img {
+      flex: 0;
     }
 
     :host #empty-dropzone {
@@ -76,7 +80,7 @@ template.innerHTML = `
       display: flex;
     }
     :host[uploading] #upload-button,
-    :host[uploading] #add-files-button {
+    :host[uploading] #add-file-button {
       display: none;
     }
 
@@ -84,16 +88,14 @@ template.innerHTML = `
       display: flex;
     }
     :host[upload-complete] #upload-button,
-    :host[upload-complete] #add-files-button {
+    :host[upload-complete] #add-file-button {
       display: none;
     }
 
     :host footer {
       background: rgba(0, 0, 0, 0.1);
-      position: absolute;
       width: 100%;
       padding: 8px;
-      bottom: 0;
       display: flex;
       justify-content: flex-end;
     }
@@ -116,12 +118,12 @@ template.innerHTML = `
     </slot>
   </div>
 
-  <div id="files-list"></div>
+  <div id="preview"></div>
 
   <footer>
     <div id="error">
       <slot name="error">
-        <span>${t('error')}</span>
+        <span id="error-message">${t('error')}</span>
       </slot>
     </div>
 
@@ -134,12 +136,11 @@ template.innerHTML = `
     <div id="upload-complete">
       <slot name="uploadComplete">
         <span>${t('uploadComplete')}</span>
-        <button type="button" id="add-more-button">${t('uploadMore')}</button>
       </slot>
     </div>
 
-    <slot name="addFilesButton">
-      <button type="button" id="add-files-button">${t('addFiles')}</button>
+    <slot name="addFileButton">
+      <button type="button" id="add-file-button">${t('addFile')}</button>
     </slot>
 
     <slot name="uploadButton">

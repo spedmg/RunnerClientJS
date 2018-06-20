@@ -1,4 +1,4 @@
-require('./__file'); // <spe-file-drop__file> sub-component
+const { RunnerUploader__File } = require('./__file'); // <runner-uploader--file> sub-component
 const { EVENTS } = require('../../constants');
 const { AsperaConnectService } = require('../../services/aspera_connect_service');
 const { AsperaDragDropService } = require('../../services/aspera_drag_drop_service');
@@ -6,7 +6,7 @@ const { AsperaFileSerializer } = require('../../services/aspera_file_serializer'
 const { AsperaUploadService } = require('../../services/aspera_upload_service');
 const { FileUploadService } = require('../../services/file_upload_service');
 const template = require('./template');
-const ELEMENT_NAME = 'spe-file-drop';
+const ELEMENT_NAME = 'runner-uploader';
 
 // ShadyCSS polyfills scoped styles in browsers that don't support this
 // ShadowDOM feature.
@@ -14,7 +14,7 @@ if (window.ShadyCSS) {
   window.ShadyCSS.prepareTemplate(template, ELEMENT_NAME);
 }
 
-class SPEFileDrop extends HTMLElement {
+class RunnerUploader extends HTMLElement {
   /**
    * Name of the HTML element
    */
@@ -99,7 +99,7 @@ class SPEFileDrop extends HTMLElement {
       this.removeAttribute('destination-folder');
     } else {
       if (!/\d+/.test(val)) {
-        throw new Error(`[<${SPEFileDrop.elName}>] destination-folder must be an integer`);
+        throw new Error(`[<${this.elName}>] destination-folder must be an integer`);
       }
       this.setAttribute('destination-folder', val);
     }
@@ -142,7 +142,7 @@ class SPEFileDrop extends HTMLElement {
 
   set folderIDs(val) {
     if (val.constructor.name !== 'Array' || !val.every(id => /\d+/.test(id))) {
-      throw new Error(`[<${SPEFileDrop.elName}>] folderIDs must be an Array of numbers`);
+      throw new Error(`[<${this.elName}>] folderIDs must be an Array of numbers`);
     }
     this.destinationFolder = undefined;
     this._folderIDs = val;
@@ -314,7 +314,7 @@ class SPEFileDrop extends HTMLElement {
     let renderedUUIDs = this._filesList.children.map(li => li.dataset.uuid);
     this.files.forEach(file => {
       if (!renderedUUIDs.includes(file.uuid)) {
-        let fileEl = document.createElement('spe-file-drop--file');
+        let fileEl = document.createElement(RunnerUploader__File.elName);
         fileEl.innerHTML = `<span slot="fileName">${file.fileName}</span>`;
         fileEl.dataset.uuid = file.uuid;
         fileEl.dataset.tooltip = file.fullFilePath;
@@ -340,6 +340,6 @@ class SPEFileDrop extends HTMLElement {
   }
 }
 
-SPEFileDrop.register();
+RunnerUploader.register();
 
-module.exports = { SPEFileDrop };
+module.exports = { RunnerUploader };
