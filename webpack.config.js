@@ -19,7 +19,7 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    index: 'dist/index.html'
+    publicPath: '/dist/'
   },
   resolve: {
     alias: {
