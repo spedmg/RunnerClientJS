@@ -32,18 +32,20 @@ template.innerHTML = `
       display: none;
     }
     :host[empty] #empty-dropzone {
+      display: -ms-flexbox;
       display: flex;
     }
 
     :host #preview {
       height: 100%;
+      display: -ms-flexbox;
       display: flex;
       justify-content: center;
       flex: 1;
     }
 
     :host #preview img {
-      flex: 0 1 auto;
+      flex: 0 0 0%;
     }
 
     :host #empty-dropzone {

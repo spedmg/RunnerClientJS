@@ -284,7 +284,7 @@ class RunnerThumbnailUpdater extends HTMLElement {
 
     let previewContainer = this.shadowRoot.getElementById('preview');
     if (previewContainer.children.length) {
-      previewContainer.children.forEach(el => el.reomve());
+      previewContainer.children.forEach(el => el.remove());
     }
     let progressEl = document.createElement('progress');
     previewContainer.appendChild(progressEl);
