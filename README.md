@@ -82,10 +82,10 @@ See [index.html](index.html) for an example including polyfills and custom web c
 </runner-client-configuration>
 ```
 
-### `<spe-file-drop>`
+### `<runner-uploader>`
 ```html
 <!--
-  The <spe-file-drop> element creates an darg-drop area as well as "Add Files"
+  The <runner-uploader> element creates an darg-drop area as well as "Add Files"
   and "Upload" buttons; everything needed for a basic upload of files or folders
   to Runner.
 
@@ -126,7 +126,39 @@ See [index.html](index.html) for an example including polyfills and custom web c
         detail.currentFiles: The current array of files (same as the `files` property above)
 -->
 
-<spe-file-drop destination-folder="42"></spe-file-drop>
+<runner-uploader destination-folder="42"></runner-uploader>
+```
+
+### `<runner-thumbnail-updater>`
+```html
+<!--
+  The <runner-thumbnail-updater> element creates an darg-drop area as well as "Add Files"
+  and "Upload" buttons; everything needed for updating the thumbnail image for
+  one or more Compass asset items.
+
+  Attributes:
+    asset-item-id: The asset item ID that will be updated. If multiple
+      are needed, use the `assetItemIDs` property instead of this attribute.
+
+  Properties:
+    assetItemIDs: An array of Compass Asset Item IDs that are to be updated.
+      Changing this property will unset the `asset-item-id` attribute.
+
+  Events: 
+    RunnerClient.EVENTS.UPLOAD_FAILED ('spe-upload-failed'): emitted when an
+      error occurs during upload
+      Attributes:
+        detail.assetItemIDs: The current array of assetItemIDs
+        detail.filename: The file name of the image uploaded
+        detail.error: Error details
+    RunnerClient.EVENTS.UPLOAD_COMPLETE ('spe-upload-complete'): emitted when
+      all Aspera transfers have completed.
+      Attributes:
+        detail.assetItemIDs: The current array of assetItemIDs
+        detail.filename: The file name of the image uploaded
+-->
+
+<runner-thumbnail-updater asset-item-id="42"></runner-thumbnail-updater>
 ```
 
 ### Dependencies
