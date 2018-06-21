@@ -22,18 +22,18 @@ template.innerHTML = `
       box-sizing: border-box;
     }
 
-    :host[incoming][empty] #incoming {
+    :host([incoming][empty]) #incoming {
       display: flex;
     }
 
-    :host[incoming][empty] #empty-dropzone {
+    :host([incoming][empty]) #empty-dropzone {
       display: none;
     }
 
-    :host[empty] #upload-button {
+    :host([empty]) #upload-button {
       display: none;
     }
-    :host[empty] #empty-dropzone {
+    :host([empty]) #empty-dropzone {
       display: flex;
     }
 
@@ -68,23 +68,23 @@ template.innerHTML = `
       justify-content: space-between;
     }
 
-    :host[error] #error {
+    :host([error]) #error {
       display: flex;
     }
 
-    :host[uploading] #uploading {
+    :host([uploading]) #uploading {
       display: flex;
     }
-    :host[uploading] #upload-button,
-    :host[uploading] #add-files-button {
+    :host([uploading]) #upload-button,
+    :host([uploading]) #add-files-button {
       display: none;
     }
 
-    :host[upload-complete] #upload-complete {
+    :host([upload-complete]) #upload-complete {
       display: flex;
     }
-    :host[upload-complete] #upload-button,
-    :host[upload-complete] #add-files-button {
+    :host([upload-complete]) #upload-button,
+    :host([upload-complete]) #add-files-button {
       display: none;
     }
 

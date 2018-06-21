@@ -20,32 +20,32 @@ template.innerHTML = `
       box-sizing: border-box;
     }
 
-    :host[incoming][empty] #incoming {
+    :host([incoming][empty]) #incoming {
       display: flex;
     }
 
-    :host[incoming][empty] #empty-dropzone {
+    :host([incoming][empty]) #empty-dropzone {
       display: none;
     }
 
-    :host[empty] #upload-button {
+    :host([empty]) #upload-button {
       display: none;
     }
-    :host[empty] #empty-dropzone {
+    :host([empty]) #empty-dropzone {
       display: -ms-flexbox;
       display: flex;
     }
 
     :host #preview {
-      height: 100%;
-      display: -ms-flexbox;
       display: flex;
       justify-content: center;
-      flex: 1;
+      align-items: center;
+      flex: 1 0 0.1px;
     }
 
     :host #preview img {
-      flex: 0 0 0%;
+      flex: 0 1 0.01px;
+      max-height: 100%;
     }
 
     :host #empty-dropzone {
@@ -74,23 +74,23 @@ template.innerHTML = `
       justify-content: space-between;
     }
 
-    :host[error] #error {
+    :host([error]) #error {
       display: flex;
     }
 
-    :host[uploading] #uploading {
+    :host([uploading]) #uploading {
       display: flex;
     }
-    :host[uploading] #upload-button,
-    :host[uploading] #add-file-button {
+    :host([uploading]) #upload-button,
+    :host([uploading]) #add-file-button {
       display: none;
     }
 
-    :host[upload-complete] #upload-complete {
+    :host([upload-complete]) #upload-complete {
       display: flex;
     }
-    :host[upload-complete] #upload-button,
-    :host[upload-complete] #add-file-button {
+    :host([upload-complete]) #upload-button,
+    :host([upload-complete]) #add-file-button {
       display: none;
     }
 

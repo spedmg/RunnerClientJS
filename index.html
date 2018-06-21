@@ -27,6 +27,8 @@
       // Fetch the additional polyfill package if there are missing features
       if (!window.Element.prototype.prepend ||
           !window.Array.prototype.includes ||
+          !window.Array.prototype.find ||
+          !window.Array.prototype.from ||
           !window.Array.prototype.findIndex) {
         promises.push(loadScript('dist/runner_client.polyfill.js'));
       }

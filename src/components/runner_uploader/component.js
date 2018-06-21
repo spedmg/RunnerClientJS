@@ -1,4 +1,4 @@
-const { RunnerUploader__File } = require('./__file'); // <runner-uploader--file> sub-component
+require('./__file'); // <runner-uploader--file> sub-component
 const { EVENTS } = require('../../constants');
 const { AsperaConnectService } = require('../../services/aspera_connect_service');
 const { AsperaDragDropService } = require('../../services/aspera_drag_drop_service');
@@ -209,7 +209,7 @@ class RunnerUploader extends HTMLElement {
       }
     }));
     this.uploading = true;
-    this._filesList.children.forEach(file => file.locked = true);
+    Array.from(this._filesList.children).forEach(file => file.locked = true);
     AsperaDragDropService.reset();
 
     AsperaUploadService.upload(this.files, { folderIds: this.folderIDs }).then(
@@ -220,7 +220,7 @@ class RunnerUploader extends HTMLElement {
 
   reset() {
     this._files = undefined;
-    this._filesList.children.forEach(file => file.remove());
+    Array.from(this._filesList.children).forEach(file => file.remove());
     this.uploadComplete = false;
     this.empty = true;
     this._connectDragDrop();
@@ -261,7 +261,7 @@ class RunnerUploader extends HTMLElement {
       }
     }));
     this.uploading = false;
-    this._filesList.children.forEach(file => file.locked = false);
+    Array.from(this._filesList.children).forEach(file => file.locked = false);
     this._connectDragDrop();
     this.error = true;
   }
@@ -310,8 +310,8 @@ class RunnerUploader extends HTMLElement {
     this.uploadComplete = true;
   }
 
-  get _fileChangeHandler() {
-    let renderedUUIDs = this._filesList.children.map(li => li.dataset.uuid);
+  _fileChangeHandler() {
+    let renderedUUIDs = Array.from(this._filesList.children).map(li => li.dataset.uuid);
     this.files.forEach(file => {
       if (!renderedUUIDs.includes(file.uuid)) {
         let fileEl = document.createElement('runner-uploader--file');
