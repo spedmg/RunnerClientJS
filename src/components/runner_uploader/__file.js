@@ -70,7 +70,7 @@ template.innerHTML = `
     }
   </style>
   <slot name="fileName"></slot>
-  <button type="button" id="remove">✕</button>
+  <button type="button" id="remove">&times;</button>
 `;
 
 // ShadyCSS polyfills scoped styles in browsers that don't support this
@@ -120,10 +120,12 @@ class RunnerUploader__File extends HTMLElement {
 
   static register() {
     // Register the custom element to the DOM
-    window.customElements.define(
-      this.elName,
-      this
-    );
+    if (!window.customElements.get(this.elName)) {
+      window.customElements.define(
+        this.elName,
+        this
+      );
+    }
   }
 }
 

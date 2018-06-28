@@ -315,10 +315,12 @@ class RunnerThumbnailUpdater extends HTMLElement {
 
   static register() {
     // Register the custom element to the DOM
-    window.customElements.define(
-      this.elName,
-      this
-    );
+    if (!window.customElements.get(this.elName)) {
+      window.customElements.define(
+        this.elName,
+        this
+      );
+    }
   }
 }
 
