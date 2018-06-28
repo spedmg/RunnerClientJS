@@ -44,32 +44,67 @@
     box-sizing: border-box;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   }
-  * {
-    box-sizing: inherit;
-  }
+  body { margin: 0; }
+  * { box-sizing: inherit; }
+  nav { background: black; color: white; padding: 12px 12px 0; }
+  nav button { background: none; border: none; border-bottom: 2px solid transparent; color: white; font-family: monospace; padding: 4px 10px; cursor: pointer; }
+  nav button.active { border-bottom: 2px solid greenyellow; }
+  nav input { float: right; }
+  section { margin: 12px; display: none; }
+  section.active { display: block; }
 </style>
 
 <body>
-  <p>This is an example usage of RunnerClient.js</p>
-
   <runner-client-configuration
     method="token"
-    token="f87e66f271b48f964536e650fb29249023598123245ba239425284d3b072686d"
-    environment="development"
+    token="DELEGATE_TOKEN"
+    environment="integration"
     locale="en"
     log-level="debug">
   </runner-client-configuration>
 
-  <pre>&lt;runner-uploader&gt;</pre>
-  <runner-uploader destination-folder="42"></runner-uploader>
+  <nav>
+    <span>Preview Components:</span>
+    <button type="button" id="show-uploader" data-target="uploader" class="active">
+      &lt;runner-uploader&gt;
+    </button>
+    <button type="button" id="show-updater" data-target="updater">
+      &lt;runner-thumbnail-updater&gt;
+    </button>
+    <input type="text" id="token" placeholder="API Token" />
+  </nav>
 
-  <pre>&lt;runner-thumbnail-updater&gt;</pre>
-  <runner-thumbnail-updater id="thumbnail-uploader" asset-item-id="422"></runner-thumbnail-updater>
+  <section id="uploader" class="active">
+    <h1><pre>&lt;runner-uploader&gt;</pre></h1>
+    <runner-uploader destination-folder="79181"></runner-uploader>
+  </section>
+
+  <section id="updater">
+    <h1><pre>&lt;runner-thumbnail-updater&gt;</pre></h1>
+    <runner-thumbnail-updater id="thumbnail-uploader" asset-item-id="422"></runner-thumbnail-updater>
+  </section>
 
   <script>
     // When assigning rich data (Arrays, Objects, etc) to an element, you must
     // add it via javascript as a property, e.g.
-    let thumbs = document.getElementById('thumbnail-uploader');
+    var thumbs = document.getElementById('thumbnail-uploader');
     thumbs.assetItemIDs = [468, 470];
+
+    var setActive = function(evt) {
+      Array.from(document.querySelectorAll('.active')).forEach(function (el) {
+        el.classList.remove('active');
+      });
+      var targetSection = evt.target.dataset.target;
+      document.getElementById(targetSection).classList.add('active');
+      evt.target.classList.add('active');
+    };
+    document.getElementById('show-uploader').addEventListener('click', setActive);
+    document.getElementById('show-updater').addEventListener('click', setActive);
+
+    var updateToken = function (evt) {
+      var config = document.querySelector('runner-client-configuration');
+      config.token = evt.target.value;
+    };
+    document.getElementById('token').addEventListener('blur', updateToken);
   </script>
 </body>
