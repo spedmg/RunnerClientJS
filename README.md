@@ -8,7 +8,7 @@ A JavaScript library for interactions with the Sony Pictures Compass API.
 ## Module usage
 
 Modules can be accessed directly from the package source. The main entrypoint is
-`runnerclient`, with submodules in the `src` directory.
+`runnerclient`, with submodules in the `src`(ES6) or `lib`(ES5) directory.
 
 ```javascript
 // using ES7 imports:
@@ -17,7 +17,7 @@ import { PackageManifestService } from 'runnerclient/src/services/package_manife
 
 // using require:
 const RunnerClient = require('runnerclient');
-const { PackageManifestService } = require('runnerclient/src/services/package_manifest_service');
+const { PackageManifestService } = require('runnerclient/lib/services/package_manifest_service');
 ```
 
 ## Browser Usage
@@ -53,8 +53,11 @@ RunnerClient.configure({
 
 ## Web Components
 
-In addition to the Javascript API, this package provides `runner_client.components.js`.
-See [index.html](index.html) for an example including polyfills and custom web components.
+In addition to the Javascript API, this package provides a collection of custom
+web components. To load the definitions for these, call `RunnerClient.loadComponents()`
+after the WebComponents polyfill and `runnerclient.js` have loaded.
+
+See [index.html](index.html) for an example.
 
 ### `<runner-client-configuration>`
 ```html

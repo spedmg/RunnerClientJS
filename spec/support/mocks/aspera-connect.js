@@ -20,9 +20,11 @@ const AW4 = {
     this.removeEventListener = function () { };
     this.setDragDropTargets = function () { };
     this.startTransfer = function (_transferSpec, _connectionSettings, callbacks) {
-      callbacks.success({
-        transfer_specs: [], // should contain objects with uuid for transfers
-      });
+      if (callbacks.success) {
+        callbacks.success({
+          transfer_specs: [], // should contain objects with uuid for transfers
+        });
+      }
       return {};
     };
     this.triggerUploadCompleteEvent = function () {

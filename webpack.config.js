@@ -2,15 +2,15 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    api: './src/index.js',
-    components: './src/components.js',
-    polyfill: './src/polyfill.js'
+    main: './src/index.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'runner_client.[name].js',
+    publicPath: 'dist/',
+    filename: 'runnerclient.js',
+    chunkFilename: 'runnerclient.[name].js',
     library: 'RunnerClient',
-    libraryExport: 'default'
+    libraryTarget: 'umd'
   },
   module: {
     rules: [
@@ -19,7 +19,7 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    publicPath: '/dist/'
+    publicPath: 'dist/'
   },
   resolve: {
     alias: {

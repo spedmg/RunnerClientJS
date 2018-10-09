@@ -79,7 +79,6 @@ class AsperaDragDropService {
     event.stopPropagation();
     event.preventDefault();
 
-    let manifestGrouping = this._groupedFolderContents(event);
     let filesDropped = event.dataTransfer.files;
     let data = {};
     data.dataTransfer = {};
@@ -93,20 +92,23 @@ class AsperaDragDropService {
       };
       data.dataTransfer.files.push(fileObject);
     }
-    let dropHelper = (response) => {
-      this._executeEventCallbacksFor(
-        'drop',
-        { event: event, files: response, dragDropManifestGrouping: manifestGrouping }
-      );
-    };
 
-    AsperaConnectService.connect.connectHttpRequest(
-      AW4.Connect.HTTP_METHOD.POST,
-      '/connect/file/dropped-files',
-      data,
-      AW4.Utils.SESSION_ID,
-      { success: dropHelper }
-    );
+    this._groupedFolderContents(event).then((manifestGrouping) => {
+      let dropHelper = (response) => {
+        this._executeEventCallbacksFor(
+          'drop',
+          { event: event, files: response, dragDropManifestGrouping: manifestGrouping }
+        );
+      };
+
+      AsperaConnectService.connect.connectHttpRequest(
+        AW4.Connect.HTTP_METHOD.POST,
+        '/connect/file/dropped-files',
+        data,
+        AW4.Utils.SESSION_ID,
+        { success: dropHelper }
+      );
+    });
   }
 
   static _executeEventCallbacksFor(eventName, data) {
@@ -114,44 +116,67 @@ class AsperaDragDropService {
     this.eventCallbacks.all.forEach((cb) => { cb(data); });
   }
 
-  static _groupedFolderContents(evt) {
-    let grouping = {};
-    let process = function(entries, path, collection) {
-      entries.forEach(function (entry) {
+  static _collectFiles(entries, path, collection) {
+    let promises = [];
+    return new Promise((resolve) => {
+      entries.forEach((entry) => {
         if (entry.isDirectory) {
-          ((path) => {
-            let reader = entry.createReader();
+          let reader = entry.createReader();
+          promises.push(new Promise((readResolve, readReject) => {
             reader.readEntries((childEntries) => {
-              process(childEntries, path, collection);
+              let childReadPromise = this._collectFiles(childEntries, entry.fullPath, collection);
+              promises.push(childReadPromise);
+              childReadPromise.then(readResolve);
             }, (err) => {
               LogService.warn(`Failed to read directory contents for ${entry.fullPath}`, err);
+              readReject();
             });
-          })(entry.fullPath || path);
+          }));
         } else {
           collection.push(path + '/' + entry.name);
         }
       });
 
-      return collection;
-    };
+      Promise.all(promises).then(() => {
+        resolve(collection);
+      });
+    });
+  }
 
-    // IE & Safari don't support the `items` property
-    if (!evt.dataTransfer.items) { return grouping; }
+  static _groupedFolderContents(evt) {
+    return new Promise((resolve, reject) => {
+      let grouping = {};
+      let promises = [];
 
-    for (let i = 0; i < evt.dataTransfer.items.length; i++) {
-      let item = evt.dataTransfer.items[i];
-      let fsEntry = item.webkitGetAsEntry();
-      if (fsEntry.isDirectory) {
-        let reader = fsEntry.createReader();
-        reader.readEntries((entries) => {
-          grouping[fsEntry.name] = process(entries, fsEntry.fullPath, []);
-        }, (err) => {
-          LogService.warn(`Failed to read directory contents for ${fsEntry.fullPath}`, err);
-        });
+      // IE & Safari don't support the `items` property
+      if (!evt.dataTransfer.items) { resolve(grouping); }
+
+      for (let i = 0; i < evt.dataTransfer.items.length; i++) {
+        let item = evt.dataTransfer.items[i];
+        let fsEntry = item.webkitGetAsEntry();
+        if (fsEntry.isDirectory) {
+          let reader = fsEntry.createReader();
+          promises.push(new Promise((dirResolve, dirReject) => {
+            reader.readEntries((entries) => {
+              let dirPromise = this._collectFiles(entries, fsEntry.fullPath, []);
+              promises.push(dirPromise);
+              dirPromise.then((result) => {
+                grouping[fsEntry.name] = result;
+                dirResolve();
+              }, dirReject);
+            }, (err) => {
+              LogService.warn(`Failed to read directory contents for ${fsEntry.fullPath}`, err);
+              dirReject();
+            });
+          }));
+        }
       }
-    }
 
-    return grouping;
+      Promise.all(promises).then(() => {
+        LogService.debug('[RunnerClient.AsperaDragDropService] Parsed drag-drop contents:', grouping);
+        resolve(grouping);
+      }, reject);
+    });
   }
 }
 

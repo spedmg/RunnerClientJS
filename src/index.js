@@ -19,11 +19,24 @@ class RunnerClient {
     if (options.locale) { Config.locale = options.locale; }
     if (options.logLevel) { Config.logLevel = options.logLevel; }
   }
+
+  static loadComponents() {
+    return new Promise((resolve, reject) => {
+      if (!window.Element.prototype.prepend ||
+          !window.Array.prototype.includes ||
+          !window.Array.prototype.find ||
+          !window.Array.prototype.from ||
+          !window.Array.prototype.findIndex) {
+        import(/* webpackChunkName: "polyfill" */ './polyfill.js').then(resolve);
+      } else {
+        resolve();
+      }
+    }).then(() => {
+      return import(/* webpackChunkName: "components" */ './components');
+    });
+  }
 }
 
 Object.assign(RunnerClient, { Config, API, EVENTS, LOG_LEVELS, METHODS, RUNNER_ENVS });
 
-module.exports = {
-  default: RunnerClient,
-  RunnerClient
-};
+module.exports = RunnerClient;

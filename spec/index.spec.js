@@ -1,4 +1,4 @@
-const { RunnerClient } = require('../src/index');
+const RunnerClient = require('../src/index');
 const { METHODS, RUNNER_ENVS } = require('../src/constants');
 const { Config } = require('../src/config');
 const { Authentication } = require('../src/config/authentication');
