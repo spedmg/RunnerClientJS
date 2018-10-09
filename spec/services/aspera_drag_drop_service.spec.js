@@ -118,7 +118,7 @@ describe('AsperaDragDropService', () => {
         spyOn(connectInstance, 'connectHttpRequest').and.callThrough();
       });
 
-      it('triggers event listeners', () => {
+      it('triggers event listeners', (done) => {
         let expected = jasmine.objectContaining ({
           event: event,
           dragDropManifestGrouping: {
@@ -128,8 +128,14 @@ describe('AsperaDragDropService', () => {
             ]
           }
         });
-        expect(callbacks.all[0]).toHaveBeenCalledWith(expected);
-        expect(callbacks.drop[0]).toHaveBeenCalledWith(expected);
+        setInterval(() => {
+          if (callbacks.all[0].calls.any()) {
+            expect(callbacks.all[0]).toHaveBeenCalledWith(expected);
+            expect(callbacks.drop[0]).toHaveBeenCalledWith(expected);
+            // int();
+            done();
+          }
+        }, 10);
       });
     });
   });

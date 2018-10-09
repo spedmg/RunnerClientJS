@@ -2,7 +2,7 @@ class AsperaFileSerializer {
   static serialize(result) {
     let files = result.files ? result.files.dataTransfer.files : result.dataTransfer.files;
 
-    return files.map(function (file) {
+    return files.map((file) => {
       let attrs = {
         name: file.name,
         size: file.size,

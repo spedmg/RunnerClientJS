@@ -1,6 +1,4 @@
-const AW4 = window.AW4;
-
-const REQUIRED_ASPERA_VERSION = '3.7.4';
+const REQUIRED_ASPERA_VERSION = '3.8.0';
 const DEFAULT_EVENT_CALLBACKS = {
   transfer: [],
   transferComplete: [],
@@ -10,13 +8,15 @@ const DEFAULT_EVENT_CALLBACKS = {
 
 class AsperaConnectService {
   static initialize() {
-    this._connect = new AW4.Connect({
-      id: `RunnerClient${Math.floor(Math.random() * 10000)}`,
+    let id = `RunnerClient${Math.floor(Math.random() * 10000)}`;
+    this._connect = new window.AW4.Connect({
+      id: id,
       dragDropEnabled: true,
       minVersion: REQUIRED_ASPERA_VERSION
     });
-    this.connectInstaller = new AW4.ConnectInstaller();
-    this._connect.addEventListener(AW4.Connect.EVENT.STATUS, this._handleAsperaEvent.bind(this));
+    this.connectInstaller = new window.AW4.ConnectInstaller();
+    this._connect.addEventListener(window.AW4.Connect.EVENT.STATUS, this._handleAsperaEvent.bind(this));
+    this._connect.initSession(id);
 
     this.activeTransfers = {};
     this.uploadBatchCount = 0;
@@ -41,7 +41,7 @@ class AsperaConnectService {
   }
 
   static start(transferSpecs, connectionSettings) {
-    this.connect.addEventListener(AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent.bind(this));
+    this.connect.addEventListener(window.AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent.bind(this));
 
     let allPromises = [];
     let tokens      = [];
@@ -57,6 +57,7 @@ class AsperaConnectService {
           reject(result.error);
         } else {
           tokens.push(result.request_id);
+          this._executeEventListenersFor('start', result);
         }
       });
       allPromises.push(promise);
@@ -74,9 +75,15 @@ class AsperaConnectService {
     });
   }
 
+  static showFolderUploadDialog(successCallback) {
+    this.connect.showSelectFolderDialog({
+      success: successCallback
+    });
+  }
+
   static _handleAsperaEvent(eventName, eventData) {
-    if (eventName === AW4.Connect.EVENT.STATUS)   { this._handleAsperaStatusEvent(eventData); }
-    if (eventName === AW4.Connect.EVENT.TRANSFER) { this._handleAsperaTransferEvent(eventData); }
+    if (eventName === window.AW4.Connect.EVENT.STATUS)   { this._handleAsperaStatusEvent(eventData); }
+    if (eventName === window.AW4.Connect.EVENT.TRANSFER) { this._handleAsperaTransferEvent(eventData); }
   }
 
   static _executeEventListenersFor(eventName, eventData) {
@@ -87,17 +94,17 @@ class AsperaConnectService {
     this._executeEventListenersFor('status', eventData);
 
     switch(eventData) {
-    case AW4.Connect.STATUS.INITIALIZING:
-    case AW4.Connect.STATUS.RETRYING:
+    case window.AW4.Connect.STATUS.INITIALIZING:
+    case window.AW4.Connect.STATUS.RETRYING:
       this.connectInstaller.showLaunching();
       break;
-    case AW4.Connect.STATUS.FAILED:
+    case window.AW4.Connect.STATUS.FAILED:
       this.connectInstaller.showDownload();
       break;
-    case AW4.Connect.STATUS.OUTDATED:
+    case window.AW4.Connect.STATUS.OUTDATED:
       this.connectInstaller.showUpdate();
       break;
-    case AW4.Connect.STATUS.RUNNING:
+    case window.AW4.Connect.STATUS.RUNNING:
       this.connectInstaller.connected();
       break;
     }
@@ -150,7 +157,7 @@ class AsperaConnectService {
   }
 
   static _removeTransferListener() {
-    this.connect.removeEventListener(AW4.Connect.EVENT.TRANSFER);
+    this.connect.removeEventListener(window.AW4.Connect.EVENT.TRANSFER);
   }
 }
 

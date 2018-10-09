@@ -1,4 +1,4 @@
-import { RunnerClient } from '../../src/index';
+import RunnerClient from '../../src/index';
 import { RunnerClientConfiguration } from 'Components/runner_client_config/component';
 
 describe('<runner-client-configuration>', () => {

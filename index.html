@@ -22,19 +22,9 @@
 
     // Wait for the webcomponentsjs polyfill to be ready
     WebComponents.waitFor(function() {
-      var promises = [];
-
-      // Fetch the additional polyfill package if there are missing features
-      if (!window.Element.prototype.prepend ||
-          !window.Array.prototype.includes ||
-          !window.Array.prototype.find ||
-          !window.Array.prototype.from ||
-          !window.Array.prototype.findIndex) {
-        promises.push(loadScript('dist/runner_client.polyfill.js'));
-      }
-
-      // Finally, load the Custom Element definitions
-      return Promise.all(promises).then(loadScript('dist/runner_client.components.js'));
+      loadScript('dist/runnerclient.js').then(function () {
+        RunnerClient.loadComponents();
+      });
     });
   })();
 </script>
@@ -90,6 +80,14 @@
     var thumbs = document.getElementById('thumbnail-uploader');
     thumbs.assetItemIDs = [6314948];
 
+    // Updates the API token on <runner-client-configuation> element
+    var updateToken = function (evt) {
+      var config = document.querySelector('runner-client-configuration');
+      config.token = evt.target.value;
+    };
+    document.getElementById('token').addEventListener('blur', updateToken);
+
+    // Switch between element examples
     var setActive = function(evt) {
       Array.from(document.querySelectorAll('.active')).forEach(function (el) {
         el.classList.remove('active');
@@ -100,11 +98,5 @@
     };
     document.getElementById('show-uploader').addEventListener('click', setActive);
     document.getElementById('show-updater').addEventListener('click', setActive);
-
-    var updateToken = function (evt) {
-      var config = document.querySelector('runner-client-configuration');
-      config.token = evt.target.value;
-    };
-    document.getElementById('token').addEventListener('blur', updateToken);
   </script>
 </body>

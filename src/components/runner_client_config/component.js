@@ -1,4 +1,4 @@
-const { RunnerClient } = require('../../index');
+const RunnerClient = require('../../index');
 const ELEMENT_NAME = 'runner-client-configuration';
 
 class RunnerClientConfiguration extends HTMLElement {
