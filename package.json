@@ -1,6 +1,6 @@
 {
   "name": "runnerclient",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A REST Client to interact with the Compass / Sony Pictures Runner API",
   "main": "dist/runner_client.js",
   "module": "lib/index.js",
