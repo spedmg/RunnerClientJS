@@ -1,3 +1,4 @@
+const uuid = require('uuid/v4');
 const REQUIRED_ASPERA_VERSION = '3.8.0';
 const DEFAULT_EVENT_CALLBACKS = {
   transfer: [],
@@ -8,13 +9,13 @@ const DEFAULT_EVENT_CALLBACKS = {
 
 class AsperaConnectService {
   static initialize() {
-    let id = `RunnerClient${Math.floor(Math.random() * 10000)}`;
+    let id = uuid();
+    this.connectInstaller = new window.AW4.ConnectInstaller();
     this._connect = new window.AW4.Connect({
       id: id,
       dragDropEnabled: true,
       minVersion: REQUIRED_ASPERA_VERSION
     });
-    this.connectInstaller = new window.AW4.ConnectInstaller();
     this._connect.addEventListener(window.AW4.Connect.EVENT.STATUS, this._handleAsperaEvent.bind(this));
     this._connect.initSession(id);
 
@@ -57,6 +58,7 @@ class AsperaConnectService {
           reject(result.error);
         } else {
           tokens.push(result.request_id);
+          result.transfer_spec = transferSpec;
           this._executeEventListenersFor('start', result);
         }
       });

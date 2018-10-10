@@ -25,7 +25,7 @@ describe('AsperaConnectService', () => {
     connectInstanceDouble = td.imitate(new AW4.Connect());
     td.when(
       connectConstructorDouble({
-        id: td.matchers.contains(/RunnerClient\d+/),
+        id: td.matchers.isA(String),
         dragDropEnabled: true,
         minVersion: td.matchers.contains(/\d\.\d\.\d/)
       })
