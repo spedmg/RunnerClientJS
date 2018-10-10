@@ -121,17 +121,26 @@ class AsperaDragDropService {
     return new Promise((resolve) => {
       entries.forEach((entry) => {
         if (entry.isDirectory) {
-          let reader = entry.createReader();
-          promises.push(new Promise((readResolve, readReject) => {
-            reader.readEntries((childEntries) => {
-              let childReadPromise = this._collectFiles(childEntries, entry.fullPath, collection);
-              promises.push(childReadPromise);
-              childReadPromise.then(readResolve);
-            }, (err) => {
-              LogService.warn(`Failed to read directory contents for ${entry.fullPath}`, err);
-              readReject();
-            });
-          }));
+          let promise = new Promise((readResolve, readReject) => {
+            let reader = entry.createReader();
+            let readEntries = () => {
+              reader.readEntries((childEntries) => {
+                if (childEntries.length) {
+                  let childReadPromise = this._collectFiles(childEntries, entry.fullPath, collection);
+                  promises.push(childReadPromise);
+                  readEntries();
+                } else {
+                  readResolve();
+                }
+              }, (err) => {
+                LogService.warn(`Failed to read directory contents for ${entry.fullPath}`, err);
+                readReject();
+              });
+            };
+
+            readEntries();
+          });
+          promises.push(promise);
         } else {
           collection.push(path + '/' + entry.name);
         }

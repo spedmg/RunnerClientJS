@@ -81,8 +81,12 @@ describe('AsperaDragDropService', () => {
 
     context('on drop', () => {
       let event;
+      let testPromise;
 
       beforeEach(() => {
+        testPromise = new Promise((resolve) => {
+          callbacks.drop.push(() => { resolve(); });
+        });
         let file = new File(['make it so'], 'jeanluc.picard', { type: 'text/plain' });
         let nestedFile = new File(['engage'], 'will.riker', { type: 'text/plain' });
         let folder = {
@@ -90,9 +94,17 @@ describe('AsperaDragDropService', () => {
           name: 'stargazer',
           fullPath: '/stargazer',
           isDirectory: true,
+          read: true,
           createReader: () => {
             return {
-              readEntries: (cb) => { cb([file, nestedFolder]); }
+              readEntries: (cb) => {
+                if (folder.read) {
+                  folder.read = false;
+                  cb([file, nestedFolder]);
+                } else {
+                  cb([]);
+                }
+              }
             };
           }
         };
@@ -102,9 +114,17 @@ describe('AsperaDragDropService', () => {
           name: 'enterprise',
           fullPath: '/stargazer/enterprise',
           isDirectory: true,
+          read: true,
           createReader: () => {
             return {
-              readEntries: (cb) => { cb([nestedFile]); }
+              readEntries: (cb) => {
+                if (nestedFolder.read) {
+                  nestedFolder.read = false;
+                  cb([nestedFile]);
+                } else {
+                  cb([]);
+                }
+              }
             };
           }
         };
@@ -128,14 +148,11 @@ describe('AsperaDragDropService', () => {
             ]
           }
         });
-        setInterval(() => {
-          if (callbacks.all[0].calls.any()) {
-            expect(callbacks.all[0]).toHaveBeenCalledWith(expected);
-            expect(callbacks.drop[0]).toHaveBeenCalledWith(expected);
-            // int();
-            done();
-          }
-        }, 10);
+        testPromise.then(() => {
+          expect(callbacks.all[0]).toHaveBeenCalledWith(expected);
+          expect(callbacks.drop[0]).toHaveBeenCalledWith(expected);
+          done();
+        });
       });
     });
   });
