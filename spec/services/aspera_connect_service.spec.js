@@ -106,6 +106,14 @@ describe('AsperaConnectService', () => {
           expect(transferCallback).toHaveBeenCalledWith(eventData.transfers[1]);
         });
 
+        // NOTE:
+        // This spec is currently failing, since testdouble doesn't let us
+        // invoke a callback within an an object (in this case, the function on
+        // `success`). See
+        // https://github.com/testdouble/testdouble.js/issues/230
+        //
+        // I'll look into doing a PR to that project to add this functionality.
+        // [EP]
         it('announces when it is complete', function () {
           triggerEventCallback('transfer', eventData);
           expect(transferCompleteCallback).not.toHaveBeenCalled();

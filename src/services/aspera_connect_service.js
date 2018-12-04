@@ -43,12 +43,10 @@ class AsperaConnectService {
 
   static start(transferSpecs, connectionSettings) {
     this.connect.addEventListener(window.AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent.bind(this));
-
-    let allPromises = [];
-    let tokens      = [];
-
-    transferSpecs.forEach((transferSpec) => {
-      let promise = new Promise((resolve, reject) => {
+    let tokens = [];
+    let currentPromise;
+    let startTransfer = (transferSpec) => {
+      return new Promise((resolve, reject) => {
         let result = this.connect.startTransfer(transferSpec, connectionSettings, {
           success: resolve,
           error: reject
@@ -62,7 +60,19 @@ class AsperaConnectService {
           this._executeEventListenersFor('start', result);
         }
       });
-      allPromises.push(promise);
+    };
+
+    let allPromises = transferSpecs.map((transferSpec) => {
+      if (currentPromise) {
+        let newPromise = currentPromise.then(() => {
+          startTransfer(transferSpec);
+        });
+        currentPromise = newPromise;
+        return newPromise;
+      } else {
+        currentPromise = startTransfer(transferSpec);
+        return currentPromise;
+      }
     });
 
     this.uploadBatchCount += 1;
