@@ -14,7 +14,7 @@ class PackageManifestService {
       let roots      = [];
       let tree       = { name: folderName, children: roots, count: 0};
       files.forEach((file) => {
-        let filePath   = file.split(fullFolderPath + '/')[1];
+        let filePath   = RegExp(path + '\/?(.*)').exec(file)[1];
         let components = filePath.split('/');
         let length     = components.length;
         let children   = roots;

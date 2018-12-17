@@ -84,14 +84,14 @@ describe('PackageManifestService', () => {
   describe('manifestForFiles', function () {
     beforeEach(function () {
       this.folderListing = [
-        '/full/folder/path/scrooge-folder/lucky-dime.mov',
-        '/full/folder/path/scrooge-folder/.DS_Store',
-        '/full/folder/path/scrooge-folder/._wut',
-        '/full/folder/path/scrooge-folder/number-one-dime.txt',
-        '/full/folder/path/scrooge-folder/ducktales/dime-enough-for-luck.mov',
-        '/full/folder/path/scrooge-folder/ducktales/favorites/duck-to-the-future.mov',
-        '/full/folder/path/scrooge-folder/ducktales/favorites/bad-duck-to-the-future.exe',
-        '/full/folder/path/scrooge-folder/ducktales/favorites/much-ado-about-scrooge.mov',
+        '/full/folder/path/scrooge-folder/scrooge-folder/lucky-dime.mov',
+        '/full/folder/path/scrooge-folder/scrooge-folder/.DS_Store',
+        '/full/folder/path/scrooge-folder/scrooge-folder/._wut',
+        '/full/folder/path/scrooge-folder/scrooge-folder/number-one-dime.txt',
+        '/full/folder/path/scrooge-folder/scrooge-folder/ducktales/dime-enough-for-luck.mov',
+        '/full/folder/path/scrooge-folder/scrooge-folder/ducktales/favorites/duck-to-the-future.mov',
+        '/full/folder/path/scrooge-folder/scrooge-folder/ducktales/favorites/bad-duck-to-the-future.exe',
+        '/full/folder/path/scrooge-folder/scrooge-folder/ducktales/favorites/much-ado-about-scrooge.mov',
       ];
     });
 
@@ -104,13 +104,15 @@ describe('PackageManifestService', () => {
           value: {
             name: 'scrooge-folder',
             children: [
-              { name: 'lucky-dime.mov' },
-              { name: 'number-one-dime.txt' },
-              { name: 'ducktales', children: [
-                { name: 'dime-enough-for-luck.mov' },
-                { name: 'favorites', children: [
-                  { name: 'duck-to-the-future.mov' },
-                  { name: 'much-ado-about-scrooge.mov' },
+              { name: 'scrooge-folder', children: [
+                { name: 'lucky-dime.mov' },
+                { name: 'number-one-dime.txt' },
+                { name: 'ducktales', children: [
+                  { name: 'dime-enough-for-luck.mov' },
+                  { name: 'favorites', children: [
+                    { name: 'duck-to-the-future.mov' },
+                    { name: 'much-ado-about-scrooge.mov' },
+                  ] },
                 ] },
               ] },
             ],
