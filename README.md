@@ -104,13 +104,13 @@ See [index.html](index.html) for an example.
     folderIDs: An array of Compass Folder IDs that items are to be uploaded to.
       Changing this property will unset the `destination-folder` attribute.
 
-  Events: 
+  Events:
     RunnerClient.EVENTS.FILES_ADDED ('spe-files-added'): emitted when files
       dropped on the element or added via the 'Add Files' button.
       Attributes:
         detail.success: Boolean. False indicates too many files were added.
         detail.currentFiles: The current array of files (same as the `files` property above)
-        detail.filesAdded: The count of files added during this drop/add operation. 
+        detail.filesAdded: The count of files added during this drop/add operation.
     RunnerClient.EVENTS.FILES_REMOVED ('spe-files-removed'): emitted when files
       are removed from the files list
       Attributes:
@@ -147,7 +147,7 @@ See [index.html](index.html) for an example.
     assetItemIDs: An array of Compass Asset Item IDs that are to be updated.
       Changing this property will unset the `asset-item-id` attribute.
 
-  Events: 
+  Events:
     RunnerClient.EVENTS.UPLOAD_FAILED ('spe-upload-failed'): emitted when an
       error occurs during upload
       Attributes:
@@ -189,6 +189,8 @@ JS Library testing: `npm run test`
 ## Building
 
 `npm run build` will output new files to the `dist` directory.
+
+`npm run build-modules` will output new files to the `lib` directory.
 
 ## Development
 

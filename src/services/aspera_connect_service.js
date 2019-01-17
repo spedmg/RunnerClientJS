@@ -65,7 +65,7 @@ class AsperaConnectService {
     let allPromises = transferSpecs.map((transferSpec) => {
       if (currentPromise) {
         let newPromise = currentPromise.then(() => {
-          startTransfer(transferSpec);
+          return startTransfer(transferSpec);
         });
         currentPromise = newPromise;
         return newPromise;
