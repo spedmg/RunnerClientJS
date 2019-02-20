@@ -50,36 +50,36 @@ class PackageManifestService {
     let numberOfFolders = 0;
     let sorted = [];
 
-    let processLevel = (level, pathComponents) => {
-      let items  = [];
-      let levels = [];
-
-      level.forEach((item) => {
-        if (item.hasOwnProperty('children')) {
-          if (this._hasNonFolderChild(item)) {
+    let processChildren = (children, folderNames) => {
+      let files = [];
+      let foldersToProcess = [];
+      children = this._sort(children);
+      children.forEach((child) => {
+        if (child.hasOwnProperty('children')) {
+          if (this._hasNonFolderChild(child)) {
             numberOfFolders += 1;
-            levels.push(item);
+            foldersToProcess.push(child);  
           }
         } else {
           numberOfFiles += 1;
-          items.push(item);
+          files.push(child.name);
         }
       });
+      let hash = {};
+      hash['/' + folderNames.join('/') + ':'] = files;
+      sorted.push(hash);
 
-      let processed = this._sort(items).map((item) => {
-        return pathComponents.concat(item.name).join('/');
+      foldersToProcess.forEach((folder) => {
+        processChildren(folder.children, folderNames.concat(folder.name));
       });
-
-      sorted = sorted.concat(processed);
-      this._sort(levels).forEach((level) => { processLevel(level.children, pathComponents.concat(level.name)); });
     };
 
-    processLevel((manifest.children || []), []);
+    processChildren(manifest.children || [], []);
 
     return {
       numberOfFiles: numberOfFiles,
       numberOfFolders: numberOfFolders,
-      sorted: sorted,
+      sorted: sorted
     };
   }
 
