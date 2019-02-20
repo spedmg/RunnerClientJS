@@ -162,16 +162,12 @@ describe('PackageManifestService', () => {
 
     it('sorts the contents', function () {
       expect(this.presented.sorted).toEqual([
-        'lucky-dime.mov',
-        'number-one-dime.txt',
-        'Ducktales/A Duck Tales Valentine (Amour or Less).mov',
-        'Ducktales/dime-enough-for-luck.mov',
-        'Ducktales/New Gizmo-Kids on the Block.mov',
-        'Ducktales/favorites/duck-to-the-future.mov',
-        'Ducktales/favorites/MUCH-ado-about-scrooge.mov',
-        'Ducktales/other/the-magic-harp.mov',
-        'quacktales/Down & Out in Duckburg.mp4',
-        'scroogetales/Horse Scents.mov',
+        {'/:': ['lucky-dime.mov', 'number-one-dime.txt']},
+        {'/Ducktales:': ['A Duck Tales Valentine (Amour or Less).mov', 'dime-enough-for-luck.mov', 'New Gizmo-Kids on the Block.mov']},
+        {'/Ducktales/favorites:': ['duck-to-the-future.mov', 'MUCH-ado-about-scrooge.mov']},
+        {'/Ducktales/other:': ['the-magic-harp.mov']},
+        {'/quacktales:': ['Down & Out in Duckburg.mp4']},
+        {'/scroogetales:': ['Horse Scents.mov']}
       ]);
     });
   });
