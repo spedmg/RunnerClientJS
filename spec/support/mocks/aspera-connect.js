@@ -71,7 +71,8 @@ const AW4 = {
     SESSION_ID: `Foobar${Math.floor(Math.random() * 10000)}`,
     BROWSER: {
       EDGE: false
-    }
+    },
+    generateUuid: () => { return 'random-uuid'; }
   }
 };
 
