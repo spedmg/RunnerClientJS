@@ -1,4 +1,3 @@
-const uuid = require('uuid/v4');
 const REQUIRED_ASPERA_VERSION = '3.9.1';
 const DEFAULT_EVENT_CALLBACKS = {
   transfer: [],
@@ -9,13 +8,14 @@ const DEFAULT_EVENT_CALLBACKS = {
 
 class AsperaConnectService {
   static initialize() {
-    let id = uuid();
-    this.connectInstaller = new window.AW4.ConnectInstaller();
-    this._connect = new window.AW4.Connect({
+    let id = window.AW4.Utils.generateUuid();
+    this.connectInstaller = new window.AW4.ConnectInstaller(this.CONNECT_INSTALLER_OPTIONS);
+    let connectOptions = Object.assign({
       id: id,
       dragDropEnabled: true,
       minVersion: REQUIRED_ASPERA_VERSION
-    });
+    }, this.CONNECT_OPTIONS);
+    this._connect = new window.AW4.Connect(connectOptions);
     this._connect.addEventListener(window.AW4.Connect.EVENT.STATUS, this._handleAsperaEvent.bind(this));
     this._connect.initSession(id);
 
@@ -170,6 +170,30 @@ class AsperaConnectService {
 
   static _removeTransferListener() {
     this.connect.removeEventListener(window.AW4.Connect.EVENT.TRANSFER);
+  }
+
+  /**
+   * Use this setter to provide non-default configuration to the
+   * AW4.Connect() constructor
+   */
+  static set CONNECT_OPTIONS (options) {
+    this.__CONNECT_OPTIONS = options;
+  }
+
+  static get CONNECT_OPTIONS () {
+    return this.__CONNECT_OPTIONS || {};
+  }
+
+  /**
+   * Use this setter to provide non-default configuration to the
+   * AW4.ConnectInstaller() constructor
+   */
+  static set CONNECT_INSTALLER_OPTIONS (options) {
+    this.__CONNECT_INSTALLER_OPTIONS = options;
+  }
+
+  static get CONNECT_INSTALLER_OPTIONS () {
+    return this.__CONNECT_INSTALLER_OPTIONS || {};
   }
 }
 
