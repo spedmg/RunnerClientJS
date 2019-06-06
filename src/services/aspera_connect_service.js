@@ -1,5 +1,5 @@
 const uuid = require('uuid/v4');
-const REQUIRED_ASPERA_VERSION = '3.8.0';
+const REQUIRED_ASPERA_VERSION = '3.9.1';
 const DEFAULT_EVENT_CALLBACKS = {
   transfer: [],
   transferComplete: [],
