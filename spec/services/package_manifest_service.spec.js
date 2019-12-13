@@ -162,12 +162,14 @@ describe('PackageManifestService', () => {
 
     it('sorts the contents', function () {
       expect(this.presented.sorted).toEqual([
-        {'/:': ['lucky-dime.mov', 'number-one-dime.txt']},
-        {'/Ducktales:': ['A Duck Tales Valentine (Amour or Less).mov', 'dime-enough-for-luck.mov', 'New Gizmo-Kids on the Block.mov']},
-        {'/Ducktales/favorites:': ['duck-to-the-future.mov', 'MUCH-ado-about-scrooge.mov']},
-        {'/Ducktales/other:': ['the-magic-harp.mov']},
-        {'/quacktales:': ['Down & Out in Duckburg.mp4']},
-        {'/scroogetales:': ['Horse Scents.mov']}
+        {'/:': [{ name: 'lucky-dime.mov' } ,{ name: 'number-one-dime.txt' } ]},
+        {'/Ducktales:': [{ name: 'A Duck Tales Valentine (Amour or Less).mov'},
+          { name: 'dime-enough-for-luck.mov' },
+          { name: 'New Gizmo-Kids on the Block.mov'}]},
+        {'/Ducktales/favorites:': [{ name: 'duck-to-the-future.mov' },{ name: 'MUCH-ado-about-scrooge.mov' }]},
+        {'/Ducktales/other:': [{ name: 'the-magic-harp.mov' }]},
+        {'/quacktales:': [{ name: 'Down & Out in Duckburg.mp4'}]},
+        {'/scroogetales:': [{ name: 'Horse Scents.mov'}]}
       ]);
     });
   });
