@@ -1,4 +1,4 @@
-const REQUIRED_ASPERA_VERSION = '3.9.1';
+const REQUIRED_ASPERA_VERSION = '3.9.8';
 const DEFAULT_EVENT_CALLBACKS = {
   transfer: [],
   transferComplete: [],
@@ -10,6 +10,8 @@ class AsperaConnectService {
   static initialize() {
     let id = window.AW4.Utils.generateUuid();
     this.connectInstaller = new window.AW4.ConnectInstaller(this.CONNECT_INSTALLER_OPTIONS);
+    window.AW4.ConnectInstaller.supportsInstallingExtensions = true;
+
     let connectOptions = Object.assign({
       id: id,
       dragDropEnabled: true,

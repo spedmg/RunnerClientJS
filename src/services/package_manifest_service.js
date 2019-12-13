@@ -14,7 +14,7 @@ class PackageManifestService {
       let roots      = [];
       let tree       = { name: folderName, children: roots, count: 0};
       files.forEach((file) => {
-        let filePath   = RegExp(path + '\/?(.*)').exec(file)[1];
+        let filePath   = RegExp(path + '/?(.*)').exec(file)[1];
         let components = filePath.split('/');
         let length     = components.length;
         let children   = roots;
@@ -58,11 +58,11 @@ class PackageManifestService {
         if (child.hasOwnProperty('children')) {
           if (this._hasNonFolderChild(child)) {
             numberOfFolders += 1;
-            foldersToProcess.push(child);  
+            foldersToProcess.push(child);
           }
         } else {
           numberOfFiles += 1;
-          files.push(child.name);
+          files.push(child);
         }
       });
       let hash = {};
@@ -76,11 +76,7 @@ class PackageManifestService {
 
     processChildren(manifest.children || [], []);
 
-    return {
-      numberOfFiles: numberOfFiles,
-      numberOfFolders: numberOfFolders,
-      sorted: sorted
-    };
+    return { numberOfFiles, numberOfFolders, sorted };
   }
 
   ////
