@@ -21,7 +21,11 @@ class AsperaDragDropService extends DragDropService {
       }
     };
 
-    const dragDropManifestGrouping = await this._groupedFolderContents(event);
+    const manifest = await this._groupedFolderContents(event);
+    const dragDropManifestGrouping = {};
+    for (let parentDirectory in manifest) {
+      dragDropManifestGrouping[parentDirectory] = Object.keys(manifest[parentDirectory]);
+    }
     let dropHelper = (files) => {
       this._executeEventCallbacksFor('drop', { event, files, dragDropManifestGrouping });
     };

@@ -76,8 +76,8 @@ class DragDropService {
     event.stopPropagation();
     event.preventDefault();
 
-    const dragDropManifestGrouping = await this._groupedFolderContents(event);
-    this._executeEventCallbacksFor('drop', { event, dragDropManifestGrouping });
+    const manifest = await this._groupedFolderContents(event);
+    this._executeEventCallbacksFor('drop', { event, manifest });
   }
 
   static _executeEventCallbacksFor(eventName, data) {
@@ -111,7 +111,8 @@ class DragDropService {
           });
           promises.push(promise);
         } else {
-          collection.push(path + '/' + entry.name);
+          let key = `${path}/${entry.name}`;
+          collection[key] = entry;
         }
       });
 
@@ -136,7 +137,7 @@ class DragDropService {
           let reader = fsEntry.createReader();
           promises.push(new Promise((dirResolve, dirReject) => {
             reader.readEntries((entries) => {
-              let dirPromise = this._collectFiles(entries, fsEntry.fullPath, []);
+              let dirPromise = this._collectFiles(entries, fsEntry.fullPath, {});
               promises.push(dirPromise);
               dirPromise.then((result) => {
                 grouping[fsEntry.name] = result;
