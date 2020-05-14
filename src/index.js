@@ -21,7 +21,7 @@ class RunnerClient {
   }
 
   static loadComponents() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       if (!window.Element.prototype.prepend ||
           !window.Array.prototype.includes ||
           !window.Array.prototype.find ||

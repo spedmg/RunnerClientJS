@@ -46,8 +46,8 @@ class AsperaConnectService {
   static start(transferSpecs, connectionSettings) {
     this.connect.addEventListener(window.AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent.bind(this));
     let tokens = [];
-    let currentPromise;
-    let startTransfer = (transferSpec) => {
+
+    let allPromises = transferSpecs.map((transferSpec) => {
       return new Promise((resolve, reject) => {
         let result = this.connect.startTransfer(transferSpec, connectionSettings, {
           success: resolve,
@@ -62,19 +62,6 @@ class AsperaConnectService {
           this._executeEventListenersFor('start', result);
         }
       });
-    };
-
-    let allPromises = transferSpecs.map((transferSpec) => {
-      if (currentPromise) {
-        let newPromise = currentPromise.then(() => {
-          return startTransfer(transferSpec);
-        });
-        currentPromise = newPromise;
-        return newPromise;
-      } else {
-        currentPromise = startTransfer(transferSpec);
-        return currentPromise;
-      }
     });
 
     this.uploadBatchCount += 1;
