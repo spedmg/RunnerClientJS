@@ -116,7 +116,7 @@ class AsperaDragDropService {
     this.eventCallbacks.all.forEach((cb) => { cb(data); });
   }
 
-  static _collectFiles(entries, path, collection) {
+  static _collectFiles(entries, path, allPromises, collection) {
     let promises = [];
     return new Promise((resolve) => {
       entries.forEach((entry) => {
@@ -126,8 +126,9 @@ class AsperaDragDropService {
             let readEntries = () => {
               reader.readEntries((childEntries) => {
                 if (childEntries.length) {
-                  let childReadPromise = this._collectFiles(childEntries, entry.fullPath, collection);
+                  let childReadPromise = this._collectFiles(childEntries, entry.fullPath, allPromises, collection);
                   promises.push(childReadPromise);
+                  allPromises.push(childReadPromise);
                   readEntries();
                 } else {
                   readResolve();
@@ -141,6 +142,7 @@ class AsperaDragDropService {
             readEntries();
           });
           promises.push(promise);
+          allPromises.push(promise);
         } else {
           collection.push(path + '/' + entry.name);
         }
@@ -164,20 +166,28 @@ class AsperaDragDropService {
         let item = evt.dataTransfer.items[i];
         let fsEntry = item.webkitGetAsEntry();
         if (fsEntry.isDirectory) {
+          let key = fsEntry.name;
           let reader = fsEntry.createReader();
-          promises.push(new Promise((dirResolve, dirReject) => {
-            reader.readEntries((entries) => {
-              let dirPromise = this._collectFiles(entries, fsEntry.fullPath, []);
-              promises.push(dirPromise);
-              dirPromise.then((result) => {
-                grouping[fsEntry.name] = result;
-                dirResolve();
-              }, dirReject);
-            }, (err) => {
-              LogService.warn(`Failed to read directory contents for ${fsEntry.fullPath}`, err);
-              dirReject();
-            });
-          }));
+          let readEntries = () => {
+            promises.push(new Promise((dirResolve, dirReject) => {
+              reader.readEntries((entries) => {
+                if (entries.length) {
+                  let dirPromise = this._collectFiles(entries, fsEntry.fullPath, promises, []);
+                  promises.push(dirPromise);
+                  dirPromise.then((result) => {
+                    grouping[key] = (grouping[key] || []).concat(result);
+                    dirResolve();
+                    readEntries();
+                  }, dirReject);
+                }
+              }, (err) => {
+                LogService.warn(`Failed to read directory contents for ${fsEntry.fullPath}`, err);
+                dirReject();
+              });
+            }));
+          };
+
+          readEntries();
         }
       }
 
