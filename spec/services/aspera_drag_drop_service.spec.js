@@ -87,8 +87,9 @@ describe('AsperaDragDropService', () => {
         testPromise = new Promise((resolve) => {
           callbacks.drop.push(() => { resolve(); });
         });
-        let file = new File(['make it so'], 'jeanluc.picard', { type: 'text/plain' });
-        let nestedFile = new File(['engage'], 'will.riker', { type: 'text/plain' });
+        let file = { fullPath: '/stargazer/jeanluc.picard', isDirectory: false, isFile: true };
+        let nestedFile = { fullPath: '/stargazer/enterprise/will.riker', isDirectory: false, isFile: true };
+
         let folder = {
           webkitGetAsEntry: () => { return folder; },
           name: 'stargazer',
@@ -110,7 +111,6 @@ describe('AsperaDragDropService', () => {
         };
 
         let nestedFolder = {
-          webkitGetAsEntry: () => { return nestedFolder; },
           name: 'enterprise',
           fullPath: '/stargazer/enterprise',
           isDirectory: true,
