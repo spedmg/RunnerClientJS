@@ -169,6 +169,7 @@ class AsperaDragDropService {
           } else {
             grouping[key] = grouping[key] || [];
             grouping[key].push(entry.fullPath);
+            if (entry === topLevelEntry) { resolve(); }
           }
         });
       };
