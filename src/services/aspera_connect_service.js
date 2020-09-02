@@ -47,22 +47,54 @@ class AsperaConnectService {
     this.connect.addEventListener(window.AW4.Connect.EVENT.TRANSFER, this._handleAsperaEvent.bind(this));
     let tokens = [];
 
-    let allPromises = transferSpecs.map((transferSpec) => {
-      return new Promise((resolve, reject) => {
-        let result = this.connect.startTransfer(transferSpec, connectionSettings, {
-          success: resolve,
-          error: reject
-        });
-
-        if (result.error) {
-          reject(result.error);
-        } else {
-          tokens.push(result.request_id);
-          result.transfer_spec = transferSpec;
-          this._executeEventListenersFor('start', result);
-        }
+    let startTransferForIndex = (index) => {
+      let result = this.connect.startTransfer(transferSpecs[index], connectionSettings, {
+        success: () => {
+          if (index < transferSpecs.length - 1) {
+            startTransferForIndex(index + 1);
+          }
+          promiseFunctions[index].resolve();
+        },
+        error: promiseFunctions[index].reject
       });
+
+      if (result.error) {
+        reject(result.error);
+      } else {
+        tokens.push(result.request_id);
+        result.transfer_spec = transferSpec;
+        this._executeEventListenersFor('start', result);
+      }
+    };
+
+    let allPromises = [];
+    let promiseFunctions = {};
+
+    transferSpecs.forEach((transferSpec, index) => {
+      let promise = new Promise((resolve, reject) => {
+        promiseFunctions[index] = { resolve, reject };
+      });
+      allPromises.push(promise);
     });
+
+    startTransferForIndex(0);
+
+    //let allPromises = transferSpecs.map((transferSpec) => {
+    //  return new Promise((resolve, reject) => {
+    //    let result = this.connect.startTransfer(transferSpec, connectionSettings, {
+    //      success: resolve,
+    //      error: reject
+    //    });
+
+    //    if (result.error) {
+    //      reject(result.error);
+    //    } else {
+    //      tokens.push(result.request_id);
+    //      result.transfer_spec = transferSpec;
+    //      this._executeEventListenersFor('start', result);
+    //    }
+    //  });
+    //});
 
     this.uploadBatchCount += 1;
     this.activeTransfers[this.uploadBatchCount] = tokens;
