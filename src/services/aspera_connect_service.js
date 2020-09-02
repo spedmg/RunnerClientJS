@@ -62,7 +62,7 @@ class AsperaConnectService {
         reject(result.error);
       } else {
         tokens.push(result.request_id);
-        result.transfer_spec = transferSpec;
+        result.transfer_spec = transferSpecs[index];
         this._executeEventListenersFor('start', result);
       }
     };
