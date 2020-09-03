@@ -59,7 +59,7 @@ class AsperaConnectService {
       });
 
       if (result.error) {
-        reject(result.error);
+        promiseFunctions[index].reject(result.error);
       } else {
         tokens.push(result.request_id);
         result.transfer_spec = transferSpecs[index];
@@ -78,23 +78,6 @@ class AsperaConnectService {
     });
 
     startTransferForIndex(0);
-
-    //let allPromises = transferSpecs.map((transferSpec) => {
-    //  return new Promise((resolve, reject) => {
-    //    let result = this.connect.startTransfer(transferSpec, connectionSettings, {
-    //      success: resolve,
-    //      error: reject
-    //    });
-
-    //    if (result.error) {
-    //      reject(result.error);
-    //    } else {
-    //      tokens.push(result.request_id);
-    //      result.transfer_spec = transferSpec;
-    //      this._executeEventListenersFor('start', result);
-    //    }
-    //  });
-    //});
 
     this.uploadBatchCount += 1;
     this.activeTransfers[this.uploadBatchCount] = tokens;
