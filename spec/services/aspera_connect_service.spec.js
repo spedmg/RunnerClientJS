@@ -7,15 +7,16 @@ describe('AsperaConnectService', () => {
   let subject;
   let eventCallbacks;
   let triggerEventCallback;
-  let orginalConnect;
+  let originalConnect;
 
   afterEach(() => {
-    AW4.Connect = orginalConnect;
+    AW4.Connect = originalConnect;
   });
 
   beforeEach(() => {
-    orginalConnect = AW4.Connect;
+    originalConnect = AW4.Connect;
     eventCallbacks = {
+      start: [],
       transfer: [],
       transferComplete: [],
       status: []
@@ -52,14 +53,24 @@ describe('AsperaConnectService', () => {
       subject.connect.addEventListener = (eventName, callback) => {
         triggerEventCallback = (eventName, eventData) => { (callback.bind(subject))(eventName, eventData); };
       };
+
+      td.when(
+        subject.connect.startTransfer(dummyTransferSpec1, dummyConnectionSettings, td.matchers.isA(Object))
+      ).thenReturn({ request_id: 'quackQuack' });
+      td.when(
+        subject.connect.startTransfer(dummyTransferSpec2, dummyConnectionSettings, td.matchers.isA(Object))
+      ).thenReturn({ request_id: 'richyRich' });
     });
 
     it('calls startTransfer on the Aspera Web Connect client', () => {
+      let result;
+      subject.eventCallbacks.start = [
+        (res) => {
+          result = res;
+        }
+      ];
       subject.start([dummyTransferSpec1], dummyConnectionSettings);
-
-      expect().toVerify(
-        subject.connect.startTransfer(dummyTransferSpec1, dummyConnectionSettings, td.matchers.isA(Object))
-      );
+      expect(result.request_id).toEqual('quackQuack');
     });
 
     describe('listeners', function () {
@@ -73,13 +84,6 @@ describe('AsperaConnectService', () => {
 
         eventCallbacks.transfer.push(transferCallback);
         eventCallbacks.transferComplete.push(transferCompleteCallback);
-
-        td.when(
-          subject.connect.startTransfer(dummyTransferSpec1, dummyConnectionSettings, td.matchers.isA(Object))
-        ).thenReturn({ request_id: 'quackQuack' });
-        td.when(
-          subject.connect.startTransfer(dummyTransferSpec2, dummyConnectionSettings, td.matchers.isA(Object))
-        ).thenReturn({ request_id: 'richyRich' });
 
         subject.start([dummyTransferSpec1, dummyTransferSpec2], dummyConnectionSettings);
         eventData = {
