@@ -28,7 +28,7 @@ describe('AsperaConnectService', () => {
       connectConstructorDouble({
         id: td.matchers.isA(String),
         dragDropEnabled: true,
-        minVersion: td.matchers.contains(/\d\.\d\.\d/)
+        minVersion: td.matchers.contains(/\d{1,2}\.\d{1,2}\.\d{1,2}/)
       })
     ).thenReturn(connectInstanceDouble);
 

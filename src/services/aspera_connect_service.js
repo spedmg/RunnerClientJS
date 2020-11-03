@@ -6,9 +6,15 @@ const DEFAULT_EVENT_CALLBACKS = {
   start: []
 };
 
+const generateID = () => {
+  const unixTime = Math.floor(Date.now() / 1000);
+  const rand = Math.floor(Math.random() * 10000);
+  return `RunnerClientJS-${unixTime}-${rand}`;
+};
+
 class AsperaConnectService {
   static initialize() {
-    let id = window.AW4.Utils.generateUuid();
+    let id = generateID();
     this.connectInstaller = new window.AW4.ConnectInstaller(this.CONNECT_INSTALLER_OPTIONS);
     window.AW4.ConnectInstaller.supportsInstallingExtensions = true;
 
