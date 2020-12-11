@@ -238,10 +238,10 @@ class RunnerUploader extends HTMLElement {
 
   _connectDragDrop() {
     AsperaDragDropService.addTarget(this, {
-      dragEnter: [
+      dragenter: [
         () => { this.incoming = true; }
       ],
-      dragLeave: [
+      dragleave: [
         () => { this.incoming = false; }
       ],
       drop: [

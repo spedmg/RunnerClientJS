@@ -30,8 +30,8 @@ describe('<runner-uploader>', () => {
       expect(AsperaDragDropService.addTarget).toHaveBeenCalledWith(
         subject,
         jasmine.objectContaining({
-          dragEnter: [jasmine.any(Function)],
-          dragLeave: [jasmine.any(Function)],
+          dragenter: [jasmine.any(Function)],
+          dragleave: [jasmine.any(Function)],
           drop: [jasmine.any(Function)],
         })
       );
@@ -59,7 +59,7 @@ describe('<runner-uploader>', () => {
 
   describe('on dragEnter', () => {
     specify(() => {
-      let dragEnterCallback = AsperaDragDropService.addTarget.calls.first().args[1].dragEnter[0];
+      let dragEnterCallback = AsperaDragDropService.addTarget.calls.first().args[1].dragenter[0];
 
       dragEnterCallback();
       expect(subject.incoming).toEqual(true);
@@ -69,7 +69,7 @@ describe('<runner-uploader>', () => {
   describe('on dragLeave', () => {
     specify(() => {
       subject.incoming = true;
-      let dragLeaveCallback = AsperaDragDropService.addTarget.calls.first().args[1].dragLeave[0];
+      let dragLeaveCallback = AsperaDragDropService.addTarget.calls.first().args[1].dragleave[0];
 
       dragLeaveCallback();
       expect(subject.incoming).toEqual(false);
