@@ -1,4 +1,4 @@
-const REQUIRED_ASPERA_VERSION = '3.9.8';
+const REQUIRED_ASPERA_VERSION = '3.10.1';
 const DEFAULT_EVENT_CALLBACKS = {
   transfer: [],
   transferComplete: [],
