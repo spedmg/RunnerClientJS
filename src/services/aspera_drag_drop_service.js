@@ -2,118 +2,53 @@ const { AsperaConnectService } = require('./aspera_connect_service');
 const { LogService } = require('./log_service');
 const AW4 = window.AW4;
 
-const DEFAULT_EVENT_CALLBACKS = {
-  all: [],
-  dragEnter: [],
-  dragLeave: [],
-  dragOver: [],
-  drop: []
-};
-
 class AsperaDragDropService {
-  static addTarget(target, eventCallbacks) {
-    AsperaConnectService.connect.initSession();
-    this.target = target;
+  static addTarget(element, eventCallbacks) {
+    this.element = element;
+    let key = 'drag-drop-element';
+    let value = Number(new Date());
+    element.setAttribute(key, value);
+    let selector = `[${key}="${value}"]`;
 
-    let callbacks = Object.assign({}, DEFAULT_EVENT_CALLBACKS, eventCallbacks);
-    let registerAll = !!callbacks.all.length;
-    if (!!callbacks.dragEnter.length || registerAll) {
-      this._dragEnterCallback = this.dragEnterCallback.bind(this);
-      target.addEventListener('dragenter', this._dragEnterCallback);
-    }
-    if (!!callbacks.dragLeave.length || registerAll) {
-      this._dragLeaveCallback = this.dragLeaveCallback.bind(this);
-      target.addEventListener('dragleave', this._dragLeaveCallback);
-    }
-    if (!!callbacks.dragOver.length || !!callbacks.drop.length || registerAll) {
-      this._dragOverCallback = this.dragOverCallback.bind(this);
-      target.addEventListener('dragover', this._dragOverCallback);
-    }
-    if (!!callbacks.drop.length || registerAll) {
-      this._dropCallback = this.dropCallback.bind(this);
-      target.addEventListener('drop', this._dropCallback);
-    }
+    this.dropListener = this._dropListener.bind(this);
+    element.addEventListener('drop', this.dropListener);
 
-    this.eventCallbacks = callbacks;
-  }
-
-  static reset() {
-    this.target.removeEventListener('dragenter', this._dragEnterCallback);
-    this.target.removeEventListener('dragleave', this._dragLeaveCallback);
-    this.target.removeEventListener('dragover', this._dragOverCallback);
-    this.target.removeEventListener('drop', this._dropCallback);
-    this.eventCallbacks = Object.assign({}, DEFAULT_EVENT_CALLBACKS);
-    this._target = undefined;
-  }
-
-  static get target() {
-    return this._target;
-  }
-
-  static set target(el) {
-    if (this._target) {
-      throw new Error('[RunnerClient.AsperaDragDropService] Cannot set more than one target!');
-    }
-    this._target = el;
-  }
-
-  static dragEnterCallback(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    this._executeEventCallbacksFor('dragEnter', { event: event });
-  }
-
-  static dragLeaveCallback(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    this._executeEventCallbacksFor('dragLeave', { event: event });
-  }
-
-  static dragOverCallback(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    this._executeEventCallbacksFor('dragOver', { event: event });
-  }
-
-  static dropCallback(event) {
-    event.stopPropagation();
-    event.preventDefault();
-
-    let filesDropped = event.dataTransfer.files;
-    let data = {};
-    data.dataTransfer = {};
-    data.dataTransfer.files = [];
-    for (let i = 0; i < filesDropped.length; i++) {
-      let fileObject  = {
-        'lastModifiedDate' : filesDropped[i].lastModifiedDate,
-        'name'             : filesDropped[i].name,
-        'size'             : filesDropped[i].size,
-        'type'             : filesDropped[i].type,
-      };
-      data.dataTransfer.files.push(fileObject);
-    }
-
-    this._groupedFolderContents(event).then((manifestGrouping) => {
-      let dropHelper = (response) => {
-        this._executeEventCallbacksFor(
-          'drop',
-          { event: event, files: response, dragDropManifestGrouping: manifestGrouping }
-        );
-      };
-
-      AsperaConnectService.connect.connectHttpRequest(
-        AW4.Connect.HTTP_METHOD.POST,
-        '/connect/file/dropped-files',
-        data,
-        AW4.Utils.SESSION_ID,
-        { success: dropHelper }
-      );
+    AsperaConnectService.connect.setDragDropTargets(selector, { dragEnter: true, dragLeave: true, drop: true }, (result) => {
+      let eventType = result.event.type;
+      let listeners = eventCallbacks[eventType];
+      (listeners || []).forEach((listener) => {
+        if (eventType === 'drop') {
+          let promiseKey = this._promiseKeyFor(result.event);
+          this.promises[promiseKey].then((manifestGrouping) => {
+            result.dragDropManifestGrouping = manifestGrouping;
+            listener(result);
+            delete this.promises[promiseKey];
+          });
+        } else {
+          listener(result);
+        }
+      });
     });
   }
 
-  static _executeEventCallbacksFor(eventName, data) {
-    this.eventCallbacks[eventName].forEach((cb) => { cb(data); });
-    this.eventCallbacks.all.forEach((cb) => { cb(data); });
+  static get promises() {
+    if (!this._promises) {
+      this._promises = {};
+    }
+    return this._promises;
+  }
+
+  static reset() {
+    this.element.removeEventListener('drop', this.dropListener);
+    this._promises = {};
+  }
+
+  static _promiseKeyFor(event) {
+    return event.type + event.timeStamp;
+  }
+
+  static _dropListener() {
+    this.promises[this._promiseKeyFor(event)] = this._groupedFolderContents(event);
   }
 
   static _groupedFolderContents(evt) {
