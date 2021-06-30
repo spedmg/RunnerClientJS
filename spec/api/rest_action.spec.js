@@ -35,7 +35,7 @@ describe('RestAction', () => {
   beforeEach(() => {
     moxios.install();
     subject = class extends RestAction {};
-    spyOnProperty(Authentication, 'httpHeaders').and.returnValue(authHeaders);
+    spyOn(Authentication, 'httpHeaders').and.returnValue(Promise.resolve(authHeaders));
     spyOnProperty(Config, 'baseURI').and.returnValue(baseURI);
   });
 
@@ -44,14 +44,10 @@ describe('RestAction', () => {
   });
 
   describe('RestAction.http', () => {
-    it('configures an axios instance', () => {
-      expect(subject.http.defaults.headers).toEqual(expectedHeaders);
-      expect(subject.http.defaults.baseURL).toEqual(baseURI);
-    });
-
-    it('memoizes the axios instance', () => {
-      let instance = subject.http;
-      expect(subject.http).toEqual(instance);
+    it('configures an axios instance', async () => {
+      const http = await subject.http();
+      expect(http.defaults.headers).toEqual(expectedHeaders);
+      expect(http.defaults.baseURL).toEqual(baseURI);
     });
   });
 

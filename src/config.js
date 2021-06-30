@@ -75,6 +75,12 @@ class Config {
       return 3;
     }
   }
+
+  // NOTE: This method should probably be used in backend environments; it's dangerous to
+  // expose a runner username/password on the frontend.
+  static authenticate (username, password) {
+    return Authentication.authenticate(this.baseURI, username, password);
+  }
 }
 
 Object.assign(Config, { Authentication });

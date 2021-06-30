@@ -4,16 +4,19 @@ const { Authentication } = require('../config/authentication');
 const axios = require('axios');
 
 class RestAction {
-  static get(endpoint, config) {
-    return this.http.get(endpoint, config);
+  static async get(endpoint, config) {
+    const http = await this.http();
+    return http.get(endpoint, config);
   }
 
-  static patch(endpoint, data) {
-    return this.http.patch(endpoint, data);
+  static async patch(endpoint, data) {
+    const http = await this.http();
+    return http.patch(endpoint, data);
   }
 
-  static post(endpoint, data) {
-    return this.http.post(endpoint, data);
+  static async post(endpoint, data) {
+    const http = await this.http();
+    return http.post(endpoint, data);
     // return fetch(Config.baseURI + endpoint, {
     //   method: 'POST',
     //   body: JSON.stringify(data),
@@ -30,14 +33,13 @@ class RestAction {
     // );
   }
 
-  static get http() {
-    if (!this._axios) {
-      this._axios = axios.create({
-        baseURL: Config.baseURI,
-        headers: Object.assign({}, DEFAULT_HTTP_HEADERS, Authentication.httpHeaders)
-      });
-    }
-    return this._axios;
+  static async http() {
+    const authHeaders = await Authentication.httpHeaders();
+
+    return axios.create({
+      baseURL: Config.baseURI,
+      headers: Object.assign({}, DEFAULT_HTTP_HEADERS, authHeaders)
+    });
   }
 }
 

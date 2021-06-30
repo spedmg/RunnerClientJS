@@ -43,8 +43,8 @@ describe('Authentication', () => {
 
       // For Runner UI exclusively.
       // No additional headers needed as long as cookie is present.
-      specify(() => {
-        expect(subject.httpHeaders).toBeUndefined();
+      specify(async () => {
+        expect(await subject.httpHeaders()).toBeUndefined();
       });
     });
 
@@ -54,8 +54,8 @@ describe('Authentication', () => {
         subject.token  = 'runnerApiAuthToken';
       });
 
-      specify(() => {
-        expect(subject.httpHeaders).toEqual({ 'Authorization': 'Bearer runnerApiAuthToken' });
+      specify(async () => {
+        expect(await subject.httpHeaders()).toEqual({ 'Authorization': 'Bearer runnerApiAuthToken' });
       });
     });
 
@@ -65,8 +65,8 @@ describe('Authentication', () => {
         subject.token  = 'runnerApiAuthToken';
       });
 
-      specify(() => {
-        expect(subject.httpHeaders).toEqual({ 'Authorization': 'Bearer runnerApiAuthToken' });
+      specify(async () => {
+        expect(await subject.httpHeaders()).toEqual({ 'Authorization': 'Bearer runnerApiAuthToken' });
       });
     });
   });
