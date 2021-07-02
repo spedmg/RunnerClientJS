@@ -22,6 +22,7 @@ describe('RestAction', () => {
         let request = moxios.requests.mostRecent();
 
         expect(request.config.method).toEqual(method);
+        expect(request.config.baseURL).toEqual(baseURI);
         expect(request.config.url).toEqual(url);
         expect(request.config.headers).toEqual(headers);
         expect(request.config.data).toEqual(JSON.stringify(data));
@@ -58,7 +59,7 @@ describe('RestAction', () => {
 
       let promise = subject.post(url, data);
 
-      await expectRequestWith('post', `${baseURI}${url}`, data);
+      await expectRequestWith('post', url, data);
 
       await promise.then((response) => {
         expect(response.status).toEqual(defaultResponse.status);
@@ -74,7 +75,7 @@ describe('RestAction', () => {
 
       let promise = subject.post(url, data);
 
-      await expectRequestWith('post', `${baseURI}${url}`, data);
+      await expectRequestWith('post', url, data);
 
       await promise.then((response) => {
         expect(response.status).toEqual(defaultResponse.status);
@@ -90,7 +91,7 @@ describe('RestAction', () => {
 
       let promise = subject.post(url, data);
 
-      await expectRequestWith('post', `${baseURI}${url}`, data);
+      await expectRequestWith('post', url, data);
 
       await promise.then((response) => {
         expect(response.status).toEqual(defaultResponse.status);

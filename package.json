@@ -1,8 +1,8 @@
 {
   "name": "runnerclient",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A REST Client to interact with the Compass / Sony Pictures Runner API",
-  "main": "dist/runner_client.js",
+  "main": "dist/runnerclient.js",
   "module": "lib/index.js",
   "modules.root": "lib",
   "author": "Sony Pictures DMG <runner@spe.sony.com>",
@@ -36,14 +36,11 @@
     "testdouble-jasmine": "^0.2.1",
     "webpack": "^4.10.2",
     "webpack-cli": "^2.1.4",
-    "webpack-dev-server": "^3.1.4"
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
-    "axios": "^0.18.0",
-    "core-js": "^2.5.7",
-    "core-util-is": "^1.0.2",
+    "axios": "^0.21.1",
     "i18n-js": "^3.0.8",
-    "lodash": "^4.17.10",
-    "proxy-polyfill": "^0.3.0"
+    "lodash": "^4.17.21"
   }
 }

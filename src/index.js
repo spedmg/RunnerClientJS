@@ -8,7 +8,7 @@ class RunnerClient {
     return packageInfo.version;
   }
 
-  static configure(options) {
+  static configure (options) {
     if (options.environment) { Config.environment = options.environment; }
     if (options.authentication) {
       let { method, token } = options.authentication;
@@ -20,20 +20,8 @@ class RunnerClient {
     if (options.logLevel) { Config.logLevel = options.logLevel; }
   }
 
-  static loadComponents() {
-    return new Promise((resolve, reject) => {
-      if (!window.Element.prototype.prepend ||
-          !window.Array.prototype.includes ||
-          !window.Array.prototype.find ||
-          !window.Array.prototype.from ||
-          !window.Array.prototype.findIndex) {
-        import(/* webpackChunkName: "polyfill" */ './polyfill.js').then(resolve);
-      } else {
-        resolve();
-      }
-    }).then(() => {
-      return import(/* webpackChunkName: "components" */ './components');
-    });
+  static async loadComponents () {
+    await import(/* webpackChunkName: "components" */ './components');
   }
 }
 
