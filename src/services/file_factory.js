@@ -1,6 +1,7 @@
 const { FileNameValidationService } = require('./file_name_validation_service');
 const { FileValidationService } = require('./file_validation_service');
 const { ThumbnailValidationService } = require('./thumbnail_validation_service');
+const uuid = require('uuid').v4;
 
 class FileFactory {
   constructor(file) {
@@ -9,7 +10,7 @@ class FileFactory {
     this.processing = false;
     this.size = file.size;
     this.fileObj = file;
-    this.uuid = window.crypto.getRandomValues(new Uint32Array(1))[0];
+    this.uuid = uuid();
 
     this.hasValidCharacters = FileNameValidationService.containsValidCharacters(this.fileName);
     this.hasExtension = FileNameValidationService.containsExtension(this.fileName);

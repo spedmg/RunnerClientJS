@@ -1,6 +1,6 @@
 {
   "name": "runnerclient",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A REST Client to interact with the Compass / Sony Pictures Runner API",
   "main": "dist/runnerclient.js",
   "module": "lib/index.js",
@@ -41,6 +41,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "i18n-js": "^3.0.8",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2"
   }
 }

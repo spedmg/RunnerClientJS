@@ -12,9 +12,13 @@ const generateID = () => {
   return `RunnerClientJS-${unixTime}-${rand}`;
 };
 
+const isBrowser = new Function('try { return this === window; }catch(e) { return false; }');
+
 class AsperaConnectService {
   static initialize() {
     let id = generateID();
+    if (!isBrowser()) { throw new Error('AsperaConnectService can only be used in browsers'); }
+
     this.connectInstaller = new window.AW4.ConnectInstaller(this.CONNECT_INSTALLER_OPTIONS);
     window.AW4.ConnectInstaller.supportsInstallingExtensions = true;
 

@@ -1,6 +1,5 @@
 const { AsperaConnectService } = require('./aspera_connect_service');
 const { LogService } = require('./log_service');
-const AW4 = window.AW4;
 
 class AsperaDragDropService {
   static addTarget(element, eventCallbacks) {
