@@ -8,7 +8,7 @@ A JavaScript library for interactions with the Sony Pictures Compass API.
 ## Module usage
 
 Modules can be accessed directly from the package source. The main entrypoint is
-`runnerclient`, with submodules in the `src`(ES6) or `lib`(ES5) directory.
+`runnerclient`, with submodules in the `src`(ES6) directory.
 
 ```javascript
 // using ES7 imports:
@@ -189,8 +189,6 @@ JS Library testing: `npm run test`
 ## Building
 
 `npm run build` will output new files to the `dist` directory.
-
-`npm run build-modules` will output new files to the `lib` directory.
 
 ## Development
 
