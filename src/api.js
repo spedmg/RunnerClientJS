@@ -1,7 +1,7 @@
 const { AssetItemClient } = require('./api/asset_item_client');
 const { IngestBatchClient } = require('./api/ingest_batch_client');
 const { UploadClient } = require('./api/upload_client');
-const { MultipartUploadClient } = require('./api/upload_client');
+const { MultipartUploadClient } = require('./api/multipart_upload_client');
 
 class API {
   static upload(objects, options) {
