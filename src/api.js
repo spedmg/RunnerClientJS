@@ -4,6 +4,10 @@ const { UploadClient } = require('./api/upload_client');
 const { MultipartUploadClient } = require('./api/multipart_upload_client');
 
 class API {
+  static getAssetItem (...args) {
+    return AssetItemClient.getAssetItem(...args);
+  }
+
   static upload(objects, options) {
     return UploadClient.post(objects, options);
   }
