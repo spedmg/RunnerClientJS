@@ -1,5 +1,3 @@
-**FOR SPE INTERNAL USE ONLY**
-
 RunnerClient.js
 ===============
 

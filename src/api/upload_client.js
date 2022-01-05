@@ -4,7 +4,7 @@ const cloneDeep = require('lodash/cloneDeep');
 const isNull = require('lodash/isNull');
 
 class UploadClient {
-  static post(objectsForUploadCollection, options) {
+  static post (objectsForUploadCollection, options) {
     options = options || {};
 
     let uploadUrl = '/api/v1/uploads';
