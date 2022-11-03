@@ -118,7 +118,7 @@ class PackageManifestService {
   }
 
   static _sort(collection) {
-    return collection.sort((a, b) => {
+    return [...collection].sort((a, b) => {
       let lowerNameA = a.name.toLowerCase();
       let lowerNameB = b.name.toLowerCase();
       if (lowerNameA < lowerNameB) {
